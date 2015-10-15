@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">BlocSpot</string>
+    <string name="menu_item_view_list">View List</string>
+    <string name="menu_item_view_map">View Map</string>
+    <string name="menu_item_filter_locations">Filter</string>
+    <string name="menu_item_search_locations">Search</string>
+    <string name="dialog_filter_ok">OK</string>
+    <string name="dialog_filter_cancel">Cancel</string>
+
 </resources>

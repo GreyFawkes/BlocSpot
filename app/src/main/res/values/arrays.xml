@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="dummy_values_cat">
+        <item>Cat 1</item>
+        <item>Cat 2</item>
+        <item>Cat 3</item>
+    </string-array>
+
+    <string-array name="dummy_values_loc">
+        <item>Loc 1</item>
+        <item>Loc 2</item>
+        <item>Loc 3</item>
+    </string-array>
+</resources>
