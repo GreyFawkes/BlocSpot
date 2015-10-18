@@ -10,37 +10,37 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import io.bloc.android.blocspot.R;
-import io.bloc.android.blocspot.ui.adapter.SearchAdapter;
+import io.bloc.android.blocspot.ui.adapter.LocationAdapter;
 
 /**
- * Created by Administrator on 10/15/2015.
+ * Created by Administrator on 10/18/2015.
  */
-public class BlocSpotLocationListFragment extends Fragment{
+public class BlocSpotSearchListFragment extends Fragment{
 
     //private static final variables
 
     //public static final variables
-    public static final String TAG_LOCATION_LIST_FRAGMENT = "LocationListFragment";
+    public static final String TAG_SEARCH_LIST_FRAGMENT = "SearchListFragment";
     //private member variables
 
     RecyclerView mRecyclerView;
     RecyclerView.Adapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
 
-        //-------------------onCreate
+    //-------------------onCreate
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
 
-        //-------------------onCreateView
+    //-------------------onCreateView
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-            //inflate view and hook up UI elements
-        View view = inflater.inflate(R.layout.fragment_search_list, container, false);
+        //inflate view and hook up UI elements
+        View view = inflater.inflate(R.layout.fragment_locations_list, container, false);
         initUI(view);
 
 
@@ -54,14 +54,14 @@ public class BlocSpotLocationListFragment extends Fragment{
     private void initUI(View view) {
 
         //wire up RecyclerView
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_search_list);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_locations_list);
 
         //create layout manager for RecyclerView and set
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         //create and set adapter
-        mAdapter = new SearchAdapter(getActivity());
+        mAdapter = new LocationAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
     }
@@ -70,4 +70,5 @@ public class BlocSpotLocationListFragment extends Fragment{
     private void initListeners() {
 
     }
+
 }

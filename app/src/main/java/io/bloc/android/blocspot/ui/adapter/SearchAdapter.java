@@ -11,9 +11,9 @@ import android.widget.TextView;
 import io.bloc.android.blocspot.R;
 
 /**
- * Created by Administrator on 10/15/2015.
+ * Created by Administrator on 10/18/2015.
  */
-public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHolder>{
+public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
     //private static final variables
 
@@ -24,15 +24,15 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     //private member variables
 
     //dummy data
-    private String data[];
+    private String storedData[];
 
 
 
     //Constructor for the Adapter
-    public LocationAdapter(Context context) {
+    public SearchAdapter(Context context) {
 
         //dummy data
-        data = context.getResources().getStringArray(R.array.dummy_values_loc);
+        storedData = context.getResources().getStringArray(R.array.dummy_values_search);
     }
 
 
@@ -49,8 +49,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
             super(view);
 
             //wire up the elements in the View
-            mTextView = (TextView) view.findViewById(R.id.tv_location_item_name);
-            mCheckBox = (CheckBox) view.findViewById(R.id.cb_location_item_has_visited);
+            mTextView = (TextView) view.findViewById(R.id.tv_stored_location_name);
+            mCheckBox = (CheckBox) view.findViewById(R.id.cb_stored_location_has_visited);
 
         }
     }
@@ -61,7 +61,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
         //inflate the correct view
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.location_item, viewGroup, false);
+                .inflate(R.layout.stored_search_location, viewGroup, false);
 
         //additional settings here
         //....
@@ -78,13 +78,13 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
         //replace the stuff inside of the view with the stuff in data
 
-        viewHolder.mTextView.setText(data[i]);
+        viewHolder.mTextView.setText(storedData[i]);
 
     }
 
     //get the size if the dataset
     @Override
     public int getItemCount() {
-        return data.length;
+        return storedData.length;
     }
 }

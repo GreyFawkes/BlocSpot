@@ -12,6 +12,7 @@ import android.view.View;
 import io.bloc.android.blocspot.R;
 import io.bloc.android.blocspot.ui.dialog.BlocSpotFilterDialogFragment;
 import io.bloc.android.blocspot.ui.fragment.BlocSpotLocationListFragment;
+import io.bloc.android.blocspot.ui.fragment.BlocSpotSearchListFragment;
 
 /**
  * Created by Administrator on 10/15/2015.
@@ -86,7 +87,7 @@ public class BlocSpotActivity extends Activity {
                     //if the Map/List action is clicked, show either the map fragment or the List fragment
                     case R.id.m_action_view_toggle_list_map:
 
-                            //perform action for this MenuItem
+                        //perform action for this MenuItem
                         actionListMapItem();
                         break;
 
@@ -134,6 +135,7 @@ public class BlocSpotActivity extends Activity {
 
         //disables/enables items in the toolbar base on whether the
         //user is searching for an item or not
+        //replaces the current fragment with a search fragment
     private void toggleSearchMenu() {
 
         //first change the value for SearchMode
@@ -164,9 +166,31 @@ public class BlocSpotActivity extends Activity {
                 //make the searchbar VISIBLE
             findViewById(R.id.sv_blocspot_toolbar).setVisibility(View.VISIBLE);
 
-            //if SearchMode has been turn off in the Activity
+
+                //replace the current fragment with a search fragment
+                //if the search fragment does not currently exist, create one
+            Fragment searchFragment = getFragmentManager()
+                    .findFragmentByTag(BlocSpotSearchListFragment.TAG_SEARCH_LIST_FRAGMENT);
+            if(searchFragment == null) {
+                searchFragment = new BlocSpotSearchListFragment();
+                getFragmentManager().beginTransaction()
+                        .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
+                        .add(R.id.fl_activity_fragment,
+                                searchFragment,
+                                BlocSpotSearchListFragment.TAG_SEARCH_LIST_FRAGMENT)
+                        .commit();
+            } else {
+                getFragmentManager().beginTransaction()
+                        .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
+                        .attach(searchFragment)
+                        .commit();
+            }
+
+
+
+            //if SearchMode has been turned off in the Activity
             // enable the menus in the toolbar, reassign the title,
-            // and disable the searchbar
+            // disable the searchbar, and remove the search fragment and attach the old fragment
         } else {
 
                 //reassign the title to the toolbar
@@ -189,16 +213,58 @@ public class BlocSpotActivity extends Activity {
                 //make the searchbar GONE
             findViewById(R.id.sv_blocspot_toolbar).setVisibility(View.GONE);
 
+                //detach the search fragment
+            Fragment searchFragment = getFragmentManager()
+                    .findFragmentByTag(BlocSpotLocationListFragment.TAG_LOCATION_LIST_FRAGMENT);
+            if(searchFragment != null) {
+                getFragmentManager().beginTransaction()
+                        .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
+                        .commit();
+            }
+
+                //attach the previously attached fragment
+                //if the mode is in Map Mode,
+            if(mIsInMapMode) {
+
+                //right now does nothing
+                //will eventually find the map fragment and reattach it to the view
+
+
+                //else if in list mode (not in map mode)
+            } else {
+
+                //reattach the old location list fragment
+                //first check if exists
+                Fragment oldFragment = getFragmentManager()
+                        .findFragmentByTag(BlocSpotLocationListFragment.TAG_LOCATION_LIST_FRAGMENT);
+                if(oldFragment != null) {
+                    getFragmentManager().beginTransaction()
+                            .attach(oldFragment)
+                            .commit();
+
+                    //if the old fragment exists just reattach it
+                } else {
+
+                        //create a new fragment if the previous one does not exist
+                    oldFragment = new BlocSpotLocationListFragment();
+                    getFragmentManager().beginTransaction()
+                            .add(R.id.fl_activity_fragment,
+                                    oldFragment,
+                                    BlocSpotLocationListFragment.TAG_LOCATION_LIST_FRAGMENT)
+                            .commit();
+                }
+
+            }
+
         }
 
     }
 
-
         //This method handles the switching between the MapView fragment
-        // and the RecyclerView fragment
+        // and the location list fragment
     private void actionListMapItem() {
 
-        //if the Application is in MapMode
+        //if the Application is currently in MapMode
         // switch the MapView with the RecyclerView of locations
         if(mIsInMapMode) {
 
@@ -211,7 +277,7 @@ public class BlocSpotActivity extends Activity {
                 locationListFragment = new BlocSpotLocationListFragment();
                 getFragmentManager().beginTransaction()
                         //.detach() // for use later
-                        .add(R.id.v_activity_fragment,
+                        .add(R.id.fl_activity_fragment,
                                 locationListFragment,
                                 BlocSpotLocationListFragment.TAG_LOCATION_LIST_FRAGMENT)
                         .commit();
@@ -242,7 +308,7 @@ public class BlocSpotActivity extends Activity {
             //dummy test
             //check if there exists a fragment in the fragment_activity
             boolean isEmpty = getFragmentManager()
-                    .findFragmentById(R.id.v_activity_fragment) == null;
+                    .findFragmentById(R.id.fl_activity_fragment) == null;
 
             //if the map fragment does not exist, create fragment then
             //if(locationMapFragment == null) {
@@ -261,7 +327,7 @@ public class BlocSpotActivity extends Activity {
                 //else
             } else {
                 getFragmentManager().beginTransaction()
-                        .detach(getFragmentManager().findFragmentById(R.id.v_activity_fragment))
+                        .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
                                 //.attach(getFragmentManager().findFragmentByTag(TAG_LOCATION_MAP_FRAGMENT)) //for later
                         .commit();
             }
@@ -269,6 +335,7 @@ public class BlocSpotActivity extends Activity {
         }
 
         //toggle the MenuItem appearance
+        //toggle the MapMode
         toggleListMapMenuItem();
     }
 }

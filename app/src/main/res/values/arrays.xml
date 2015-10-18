@@ -11,4 +11,10 @@
         <item>Loc 2</item>
         <item>Loc 3</item>
     </string-array>
+
+    <string-array name="dummy_values_search">
+        <item>Loc 1</item>
+        <item>Loc 2</item>
+        <item>Loc 3</item>
+    </string-array>
 </resources>
