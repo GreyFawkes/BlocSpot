@@ -8,7 +8,15 @@
         android:id="@+id/tb_blocspot_activity"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/accent_material_light"/>
+        android:background="@color/accent_material_light">
+
+        <android.support.v7.widget.SearchView
+            android:id="@+id/sv_blocspot_toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+    </android.support.v7.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/v_activity_fragment"

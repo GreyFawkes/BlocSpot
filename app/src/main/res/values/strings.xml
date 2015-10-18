@@ -4,6 +4,7 @@
     <string name="menu_item_view_map">View Map</string>
     <string name="menu_item_filter_locations">Filter</string>
     <string name="menu_item_search_locations">Search</string>
+    <string name="menu_item_close_search_locations">Close</string>
     <string name="dialog_filter_ok">OK</string>
     <string name="dialog_filter_cancel">Cancel</string>
 
