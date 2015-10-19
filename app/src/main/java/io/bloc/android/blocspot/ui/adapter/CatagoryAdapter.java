@@ -25,7 +25,7 @@ public class CatagoryAdapter extends RecyclerView.Adapter<CatagoryAdapter.ViewHo
     //private member variables
 
         //dummy data
-    String data[];
+    private String data[];
 
 
 

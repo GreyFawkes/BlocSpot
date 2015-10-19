@@ -13,7 +13,6 @@
     </layouts>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_LOG_LEVEL" value="ERROR" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
@@ -48,10 +47,10 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/io/bloc/android/blocspot/ui/activity/BlocSpotActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="146" column="0" selection-start-line="146" selection-start-column="0" selection-end-line="146" selection-end-column="0" />
+              <caret line="306" column="0" selection-start-line="306" selection-start-column="0" selection-end-line="306" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <marker date="1445207694251" expanded="true" signature="6514:6515" placeholder="//..." />
+                <marker date="1445277586615" expanded="true" signature="13352:13353" placeholder="//..." />
               </folding>
             </state>
           </provider>
@@ -61,7 +60,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/category_item.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="21" column="17" selection-start-line="21" selection-start-column="17" selection-end-line="21" selection-end-column="17" />
+              <caret line="33" column="15" selection-start-line="33" selection-start-column="15" selection-end-line="33" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -83,9 +82,11 @@
       <file leaf-file-name="dialog_fragment_blocspot_filter.xml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_fragment_blocspot_filter.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.06215722">
-              <caret line="2" column="48" selection-start-line="2" selection-start-column="48" selection-end-line="2" selection-end-column="48" />
-              <folding />
+            <state vertical-scroll-proportion="0.7513711">
+              <caret line="31" column="46" selection-start-line="31" selection-start-column="46" selection-end-line="31" selection-end-column="46" />
+              <folding>
+                <element signature="e#541#570#0" expanded="true" />
+              </folding>
             </state>
           </provider>
           <provider editor-type-id="android-designer">
@@ -97,7 +98,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/location_item.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="21" column="17" selection-start-line="21" selection-start-column="17" selection-end-line="21" selection-end-column="17" />
+              <caret line="64" column="15" selection-start-line="64" selection-start-column="15" selection-end-line="64" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -1563,21 +1564,28 @@
         <option value="$PROJECT_DIR$/app/src/main/java/io/bloc/android/blocspot/BlocSpotApplication.java" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/dialog_fragment_blocspot_filter.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/io/bloc/android/blocspot/ui/adapter/CatagoryAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/io/bloc/android/blocspot/ui/dialog/FilterDialogFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/arrays.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/menu/blocspot_activity_menu.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_locations_list.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/catagory_item.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/category_item.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/location_item.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/io/bloc/android/blocspot/ui/adapter/LocationAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/io/bloc/android/blocspot/ui/fragment/BlocSpotListFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/menu/blocspot_activity_menu.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/io/bloc/android/blocspot/ui/adapter/CatagoryAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/io/bloc/android/blocspot/ui/adapter/LocationAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/unstored_search_locations.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/googled_search_locations.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/googled_search_location.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/category_item.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/stored_search_locations.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/io/bloc/android/blocspot/ui/fragment/BlocSpotSearchListFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_search_list.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/io/bloc/android/blocspot/ui/fragment/BlocSpotLocationListFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_blocspot.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/location_item.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/arrays.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/io/bloc/android/blocspot/ui/adapter/SearchAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/io/bloc/android/blocspot/ui/activity/BlocSpotActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/dialog_fragment_blocspot_filter.xml" />
       </list>
     </option>
   </component>
@@ -1665,7 +1673,7 @@
     <property name="FullScreen" value="false" />
     <property name="UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager2.WIDTH" value="227" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../Blocly" />
-    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="e51bb623" />
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="04243146013530011945" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="Test" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="OverrideImplement.overriding.sorted" value="false" />
@@ -1876,7 +1884,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1960,7 +1968,7 @@
           <caret line="146" column="0" selection-start-line="146" selection-start-column="0" selection-end-line="146" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1445207694251" expanded="true" signature="6514:6515" placeholder="//..." />
+            <marker date="1445277586615" expanded="true" signature="13352:13353" placeholder="//..." />
           </folding>
         </state>
       </provider>
@@ -1988,7 +1996,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="48" selection-start-line="2" selection-start-column="48" selection-end-line="2" selection-end-column="48" />
-          <folding />
+          <folding>
+            <element signature="e#541#570#0" expanded="true" />
+          </folding>
         </state>
       </provider>
       <provider editor-type-id="android-designer">
@@ -2012,7 +2022,7 @@
           <caret line="186" column="38" selection-start-line="186" selection-start-column="38" selection-end-line="186" selection-end-column="38" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1445207694251" expanded="true" signature="6514:6515" placeholder="//..." />
+            <marker date="1445277586615" expanded="true" signature="13352:13353" placeholder="//..." />
           </folding>
         </state>
       </provider>
@@ -2050,7 +2060,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1445207694251" expanded="true" signature="6514:6515" placeholder="//..." />
+            <marker date="1445277586615" expanded="true" signature="13352:13353" placeholder="//..." />
           </folding>
         </state>
       </provider>
@@ -2126,6 +2136,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.635514">
           <caret line="124" column="5" selection-start-line="103" selection-start-column="4" selection-end-line="124" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2154,7 +2167,7 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/location_item.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="17" selection-start-line="21" selection-start-column="17" selection-end-line="21" selection-end-column="17" />
+          <caret line="64" column="15" selection-start-line="64" selection-start-column="15" selection-end-line="64" selection-end-column="15" />
           <folding />
         </state>
       </provider>
@@ -2202,12 +2215,44 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/io/bloc/android/blocspot/ui/activity/BlocSpotActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="146" column="0" selection-start-line="146" selection-start-column="0" selection-end-line="146" selection-end-column="0" />
+          <caret line="306" column="0" selection-start-line="306" selection-start-column="0" selection-end-line="306" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1445207694251" expanded="true" signature="6514:6515" placeholder="//..." />
+            <marker date="1445277586615" expanded="true" signature="13352:13353" placeholder="//..." />
           </folding>
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/category_item.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="33" column="15" selection-start-line="33" selection-start-column="15" selection-end-line="33" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="7" column="55" selection-start-line="7" selection-start-column="55" selection-end-line="7" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_fragment_blocspot_filter.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7513711">
+          <caret line="31" column="46" selection-start-line="31" selection-start-column="46" selection-end-line="31" selection-end-column="46" />
+          <folding>
+            <element signature="e#541#570#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/category_item.xml">
