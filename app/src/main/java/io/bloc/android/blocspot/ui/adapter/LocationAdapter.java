@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
@@ -14,6 +15,9 @@ import io.bloc.android.blocspot.R;
  * Created by Administrator on 10/15/2015.
  */
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHolder>{
+
+    //Callbacks method needed here...
+
 
     //private static final variables
 
@@ -44,6 +48,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
         public TextView mTextView;
         public CheckBox mCheckBox;
+        public Button mOptionsButton;
 
         public ViewHolder(View view) {
             super(view);
@@ -51,6 +56,18 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
             //wire up the elements in the View
             mTextView = (TextView) view.findViewById(R.id.tv_location_item_name);
             mCheckBox = (CheckBox) view.findViewById(R.id.cb_location_item_has_visited);
+            mOptionsButton = (Button) view.findViewById(R.id.btn_location_item_options);
+
+            mOptionsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //send a Callback to show a new optionsDialogFragment
+
+                }
+            });
+
+
 
         }
     }

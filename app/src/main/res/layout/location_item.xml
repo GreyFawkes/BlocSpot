@@ -47,7 +47,8 @@
 
         </LinearLayout>
 
-        <View
+        <Button
+            android:id="@+id/btn_location_item_options"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
