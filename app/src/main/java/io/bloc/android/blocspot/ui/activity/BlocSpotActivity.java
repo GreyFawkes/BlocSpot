@@ -11,6 +11,7 @@ import android.view.View;
 
 import io.bloc.android.blocspot.R;
 import io.bloc.android.blocspot.ui.dialog.BlocSpotFilterDialogFragment;
+import io.bloc.android.blocspot.ui.dialog.BlocSpotLocationAlertDialog;
 import io.bloc.android.blocspot.ui.fragment.BlocSpotLocationListFragment;
 import io.bloc.android.blocspot.ui.fragment.BlocSpotSearchListFragment;
 
@@ -100,6 +101,15 @@ public class BlocSpotActivity extends Activity {
                     case R.id.m_action_search_locations:
 
                         toggleSearchMenu();
+                        break;
+
+                    case R.id.m_action_test_location_alert:
+
+                        BlocSpotLocationAlertDialog alertDialog =
+                                BlocSpotLocationAlertDialog.newInstance();
+
+                        alertDialog.show(getFragmentManager(),
+                                BlocSpotLocationAlertDialog.TAG_ALERT_LOCATION_DIALOG);
                         break;
 
                     default:

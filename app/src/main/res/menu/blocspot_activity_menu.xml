@@ -21,4 +21,10 @@
         android:orderInCategory="2"
         app:showAsAction="ifRoom"/>
 
+    <item
+        android:id="@+id/m_action_test_location_alert"
+        android:title="Test Popup"
+        android:orderInCategory="3"
+        app:showAsAction="ifRoom"/>
+
 </menu>
