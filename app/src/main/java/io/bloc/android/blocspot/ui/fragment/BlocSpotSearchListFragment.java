@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import io.bloc.android.blocspot.R;
-import io.bloc.android.blocspot.ui.adapter.LocationAdapter;
+import io.bloc.android.blocspot.ui.adapter.SearchAdapter;
 
 /**
  * Created by Administrator on 10/18/2015.
@@ -24,7 +24,7 @@ public class BlocSpotSearchListFragment extends Fragment{
     //private member variables
 
     RecyclerView mRecyclerView;
-    RecyclerView.Adapter mAdapter;
+    SearchAdapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
 
     //-------------------onCreate
@@ -61,7 +61,7 @@ public class BlocSpotSearchListFragment extends Fragment{
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         //create and set adapter
-        mAdapter = new LocationAdapter(getActivity());
+        mAdapter = new SearchAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
     }

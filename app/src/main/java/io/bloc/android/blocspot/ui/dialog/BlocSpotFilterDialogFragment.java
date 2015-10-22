@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import io.bloc.android.blocspot.R;
-import io.bloc.android.blocspot.ui.adapter.CatagoryAdapter;
+import io.bloc.android.blocspot.ui.adapter.CategoryAdapter;
 
 /**
  * Created by Administrator on 10/15/2015.
@@ -30,7 +30,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment {
 
         //RecyclerView variables
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private CategoryAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
         //newInstance method
@@ -114,7 +114,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
             //create and set adapter
-        mAdapter = new CatagoryAdapter(getActivity());
+        mAdapter = new CategoryAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
     }

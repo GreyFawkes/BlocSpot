@@ -44,6 +44,10 @@ public class BlocSpotActivity extends Activity {
         mIsInMapMode = true;
         mIsInSearchMode = false;
 
+            //wire up the interfaces with the adapters
+
+
+
             //Set up the toolbar
         mToolbar = (Toolbar) findViewById(R.id.tb_blocspot_activity);
         initActivityToolbar();
@@ -108,8 +112,12 @@ public class BlocSpotActivity extends Activity {
 
     }
 
-    //--------------------------private methods----------------------
+    //-------------------------Interface Methods--------------------
 
+
+
+
+    //--------------------------private methods----------------------
 
         //changes the appearance of the MenuItem to switch between map and list
     private void toggleListMapMenuItem() {
@@ -338,4 +346,6 @@ public class BlocSpotActivity extends Activity {
         //toggle the MapMode
         toggleListMapMenuItem();
     }
+
+
 }

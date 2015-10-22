@@ -14,7 +14,7 @@ import io.bloc.android.blocspot.R;
  * Created by Administrator on 10/15/2015.
  */
 
-public class CatagoryAdapter extends RecyclerView.Adapter<CatagoryAdapter.ViewHolder> {
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
     //private static final variables
 
@@ -30,7 +30,7 @@ public class CatagoryAdapter extends RecyclerView.Adapter<CatagoryAdapter.ViewHo
 
 
         //Constructor for the Adapter
-    public CatagoryAdapter(Context context) {
+    public CategoryAdapter(Context context) {
 
             //dummy data
         data = context.getResources().getStringArray(R.array.dummy_values_cat);
@@ -41,7 +41,7 @@ public class CatagoryAdapter extends RecyclerView.Adapter<CatagoryAdapter.ViewHo
     /*
     provides a reference to each of the widgets in the holder view
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mTextView;
         public CheckBox mCheckBox;

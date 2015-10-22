@@ -8,14 +8,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import io.bloc.android.blocspot.R;
-import io.bloc.android.blocspot.ui.adapter.SearchAdapter;
+import io.bloc.android.blocspot.ui.adapter.LocationAdapter;
+import io.bloc.android.blocspot.ui.dialog.BlocSpotLocationItemOptionsDialog;
 
 /**
  * Created by Administrator on 10/15/2015.
  */
-public class BlocSpotLocationListFragment extends Fragment{
+public class BlocSpotLocationListFragment extends Fragment
+    implements LocationAdapter.Callbacks{
 
     //private static final variables
 
@@ -24,7 +27,7 @@ public class BlocSpotLocationListFragment extends Fragment{
     //private member variables
 
     RecyclerView mRecyclerView;
-    RecyclerView.Adapter mAdapter;
+    LocationAdapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
 
         //-------------------onCreate
@@ -48,6 +51,32 @@ public class BlocSpotLocationListFragment extends Fragment{
     }
 
 
+    //------------Interface methods-----------
+
+
+        //performs the following when the user presses the options button
+    @Override
+    public void test(String string) {
+        Toast.makeText(getActivity(), string, Toast.LENGTH_SHORT).show();
+    }
+
+        //performs the following when the user presses the options button
+        //on any of the location item views
+    @Override
+    public void whenOptionsButtonPressed() {
+            //create the optionsMenu dialog
+        BlocSpotLocationItemOptionsDialog optionsDialog =
+                BlocSpotLocationItemOptionsDialog.newInstance();
+
+            //any additional setup for the fragment goes here
+
+            //post the dialog as an alertDialog
+        optionsDialog.show(getFragmentManager(),
+                optionsDialog.TAG_LOCATION_OPTIONS_DIALOG_FRAGMENT);
+
+
+    }
+
     //------------private methods-----------
 
     //initialize all UI dialog elements
@@ -61,8 +90,11 @@ public class BlocSpotLocationListFragment extends Fragment{
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         //create and set adapter
-        mAdapter = new SearchAdapter(getActivity());
+        mAdapter = new LocationAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
+
+        //set up the callbacks
+        mAdapter.setCallbacks(this);
 
     }
 

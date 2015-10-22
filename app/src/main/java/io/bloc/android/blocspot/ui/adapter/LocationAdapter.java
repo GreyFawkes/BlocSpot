@@ -9,14 +9,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
+
 import io.bloc.android.blocspot.R;
 
 /**
  * Created by Administrator on 10/15/2015.
  */
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHolder>{
-
-    //Callbacks method needed here...
 
 
     //private static final variables
@@ -31,6 +31,24 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     private String data[];
 
 
+    //Interface methods needed here...
+    public interface Callbacks {
+        void test(String string);
+        void whenOptionsButtonPressed();
+    }
+
+    //interface variables here
+    private WeakReference<Callbacks> callbacks;
+
+    //callback methods
+    public Callbacks getCallbacks() {
+        if(callbacks == null) return null;
+        return callbacks.get();
+    }
+
+    public void setCallbacks(Callbacks callbacks) {
+        this.callbacks = new WeakReference<Callbacks>(callbacks);
+    }
 
     //Constructor for the Adapter
     public LocationAdapter(Context context) {
@@ -44,7 +62,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     /*
     provides a reference to each of the widgets in the holder view
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder{
 
         public TextView mTextView;
         public CheckBox mCheckBox;
@@ -62,7 +80,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
                 @Override
                 public void onClick(View v) {
 
-                    //send a Callback to show a new optionsDialogFragment
+                    getCallbacks().test("Hi");
+                    getCallbacks().whenOptionsButtonPressed();
 
                 }
             });
@@ -70,6 +89,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
 
         }
+
     }
 
     //create the ViewHolder in the Adapter
