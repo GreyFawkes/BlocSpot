@@ -15,6 +15,7 @@ import io.bloc.android.blocspot.ui.dialog.BlocSpotLocationAlertDialog;
 import io.bloc.android.blocspot.ui.fragment.BlocSpotLocationListFragment;
 import io.bloc.android.blocspot.ui.fragment.BlocSpotSearchListFragment;
 
+
 /**
  * Created by Administrator on 10/15/2015.
  */
@@ -24,9 +25,13 @@ public class BlocSpotActivity extends Activity {
     private static final String TAG = "BlocSpotActivity";
     private static final String TAG_DIALOG_FRAGMENT_FILTER = "BlocSpotFilterDialogFragment";
 
+    private static final String TAG_MAP_FRAGMENT = "BlocSpotMapFragment";
+
     //Member variables here
     Toolbar mToolbar;
     SearchView mSearchView;
+
+
 
     //Activity Mode variables
     boolean mIsInMapMode;
@@ -45,7 +50,7 @@ public class BlocSpotActivity extends Activity {
         mIsInMapMode = true;
         mIsInSearchMode = false;
 
-            //wire up the interfaces with the adapters
+            //wire up the interfaces with the adapters if needed here
 
 
 
@@ -55,7 +60,8 @@ public class BlocSpotActivity extends Activity {
 
             //set up the searchbar and listener
         mSearchView = (SearchView) findViewById(R.id.sv_blocspot_toolbar);
-            //if the search menu is dismissed dismiss the searchbar and
+
+            //if the search menu is dismissed remove the searchbar and
             // and return the toolbar to its original state
         mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
@@ -64,6 +70,9 @@ public class BlocSpotActivity extends Activity {
                 return false;
             }
         });
+
+        //insert a mapfragment to start
+
     }
 
     //--------------private methods-------------------
