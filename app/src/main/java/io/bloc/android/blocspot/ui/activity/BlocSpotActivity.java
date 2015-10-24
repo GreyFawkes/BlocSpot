@@ -15,7 +15,6 @@ import io.bloc.android.blocspot.ui.dialog.BlocSpotLocationAlertDialog;
 import io.bloc.android.blocspot.ui.fragment.BlocSpotLocationListFragment;
 import io.bloc.android.blocspot.ui.fragment.BlocSpotSearchListFragment;
 
-
 /**
  * Created by Administrator on 10/15/2015.
  */
@@ -30,7 +29,6 @@ public class BlocSpotActivity extends Activity {
     //Member variables here
     Toolbar mToolbar;
     SearchView mSearchView;
-
 
 
     //Activity Mode variables
