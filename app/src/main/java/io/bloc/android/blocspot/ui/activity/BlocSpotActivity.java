@@ -9,6 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+
 import io.bloc.android.blocspot.R;
 import io.bloc.android.blocspot.ui.dialog.BlocSpotFilterDialogFragment;
 import io.bloc.android.blocspot.ui.dialog.BlocSpotLocationAlertDialog;
@@ -18,7 +22,7 @@ import io.bloc.android.blocspot.ui.fragment.BlocSpotSearchListFragment;
 /**
  * Created by Administrator on 10/15/2015.
  */
-public class BlocSpotActivity extends Activity {
+public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
     //Final Static variables go here
     private static final String TAG = "BlocSpotActivity";
@@ -30,6 +34,8 @@ public class BlocSpotActivity extends Activity {
     Toolbar mToolbar;
     SearchView mSearchView;
 
+    //Google Map fragment
+    MapFragment mMapFragment;
 
     //Activity Mode variables
     boolean mIsInMapMode;
@@ -69,7 +75,11 @@ public class BlocSpotActivity extends Activity {
             }
         });
 
-        //insert a mapfragment to start
+        //insert a mapfragment into the fragment frameLayout
+        mMapFragment = MapFragment.newInstance();
+        getFragmentManager().beginTransaction()
+                .add(R.id.fl_activity_fragment, mMapFragment, TAG_MAP_FRAGMENT)
+                .commit();
 
     }
 
@@ -131,8 +141,11 @@ public class BlocSpotActivity extends Activity {
 
     //-------------------------Interface Methods--------------------
 
+    //GoogleMap onReady method
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
 
-
+    }
 
     //--------------------------private methods----------------------
 
@@ -285,6 +298,7 @@ public class BlocSpotActivity extends Activity {
 
     }
 
+
         //This method handles the switching between the MapView fragment
         // and the location list fragment
     private void actionListMapItem() {
@@ -293,6 +307,7 @@ public class BlocSpotActivity extends Activity {
         // switch the MapView with the RecyclerView of locations
         if(mIsInMapMode) {
 
+            //find the locationListFragment if it exists
             Fragment locationListFragment = getFragmentManager()
                     .findFragmentByTag(BlocSpotLocationListFragment.TAG_LOCATION_LIST_FRAGMENT);
 
@@ -301,7 +316,7 @@ public class BlocSpotActivity extends Activity {
             if (locationListFragment == null) {
                 locationListFragment = new BlocSpotLocationListFragment();
                 getFragmentManager().beginTransaction()
-                        //.detach() // for use later
+                        .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
                         .add(R.id.fl_activity_fragment,
                                 locationListFragment,
                                 BlocSpotLocationListFragment.TAG_LOCATION_LIST_FRAGMENT)
@@ -313,7 +328,7 @@ public class BlocSpotActivity extends Activity {
 
                 //reattach the locationListFragment to the activity_fragment
                 getFragmentManager().beginTransaction()
-                        //.detach() for later use
+                        .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
                         .attach(locationListFragment)
                         .commit();
 
@@ -324,6 +339,21 @@ public class BlocSpotActivity extends Activity {
         } else {
 
             //get Map fragment here
+            MapFragment fragment =
+                    (MapFragment)getFragmentManager().findFragmentByTag(TAG_MAP_FRAGMENT);
+
+            //detach current fragment
+            getFragmentManager().beginTransaction()
+                    .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
+                    .commit();
+
+            if(fragment == null) {
+                //create a new mapFragment
+                //attach the new fragment
+            } else {
+                //attach the old mapFragment
+            }
+
 
             //check if the map fragment exists
             //if not, create one, detach current fragment, 'add' this one
@@ -364,5 +394,5 @@ public class BlocSpotActivity extends Activity {
         toggleListMapMenuItem();
     }
 
-
+    //
 }

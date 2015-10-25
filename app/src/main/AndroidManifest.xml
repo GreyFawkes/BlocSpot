@@ -15,6 +15,14 @@
         android:icon="@mipmap/ic_launcher"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDY1pNXZw2T86VOTO1FaEwDaiY2I0f29AU"/>
+
         <activity android:name=".ui.activity.BlocSpotActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
