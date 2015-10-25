@@ -83,16 +83,24 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
     }
 
-    //--------------private methods-------------------
+    //-------------------------Interface Methods--------------------
+
+    //GoogleMap onReady method
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+    }
+
+    //--------------------------private methods----------------------
 
     //initialize the toolbar
     private void initActivityToolbar() {
 
-            //set the dialogs menu, title, and
+        //set the dialogs menu, title, and
         mToolbar.inflateMenu(R.menu.blocspot_activity_menu);
         mToolbar.setTitle(getResources().getString(R.string.app_name));
 
-            //toolbar onMenuItemClickListener
+        //toolbar onMenuItemClickListener
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -139,16 +147,6 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
     }
 
-    //-------------------------Interface Methods--------------------
-
-    //GoogleMap onReady method
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-    }
-
-    //--------------------------private methods----------------------
-
         //changes the appearance of the MenuItem to switch between map and list
     private void toggleListMapMenuItem() {
 
@@ -186,7 +184,9 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
                 //remove the title from the toolbar
             mToolbar.setTitle("");
-                //change the title of the SearchItem to Close
+
+                //change the title of the Search menuItem from 'Search' to 'Close'
+                ////TODO: change the icon of this menuItem from a 'magnifying glass' to  'X'
                 //disable other menuItems
             Menu toolbarMenu = mToolbar.getMenu();
             toolbarMenu.findItem(R.id.m_action_search_locations)
@@ -209,17 +209,26 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
                 //if the search fragment does not currently exist, create one
             Fragment searchFragment = getFragmentManager()
                     .findFragmentByTag(BlocSpotSearchListFragment.TAG_SEARCH_LIST_FRAGMENT);
+
+                //detach the current fragment in the fragment space
+            getFragmentManager().beginTransaction()
+                    .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
+                    .commit();
+
+                //if the searchFragment does not exist create a new one
+                //then add it to the fragment space
             if(searchFragment == null) {
                 searchFragment = new BlocSpotSearchListFragment();
                 getFragmentManager().beginTransaction()
-                        .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
                         .add(R.id.fl_activity_fragment,
                                 searchFragment,
                                 BlocSpotSearchListFragment.TAG_SEARCH_LIST_FRAGMENT)
                         .commit();
+
+                //if the searchFragment exists
+                //attach it to the fragment space
             } else {
                 getFragmentManager().beginTransaction()
-                        .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
                         .attach(searchFragment)
                         .commit();
             }
@@ -233,8 +242,10 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
                 //reassign the title to the toolbar
             mToolbar.setTitle(getResources().getString(R.string.app_name));
-                //change the title of the SearchItem to Search
-                //disable other menuItems
+
+                //change the title of the Search menuItem from 'Close' to 'Search'
+                ////TODO: change the icon of this menuItem from a 'X' to a 'magnifying glass'
+                //enable the disabled menuItems
             Menu toolbarMenu = mToolbar.getMenu();
             toolbarMenu.findItem(R.id.m_action_search_locations)
                     .setTitle(getResources()
@@ -252,43 +263,68 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
             findViewById(R.id.sv_blocspot_toolbar).setVisibility(View.GONE);
 
                 //detach the search fragment
-            Fragment searchFragment = getFragmentManager()
-                    .findFragmentByTag(BlocSpotLocationListFragment.TAG_LOCATION_LIST_FRAGMENT);
-            if(searchFragment != null) {
-                getFragmentManager().beginTransaction()
-                        .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
-                        .commit();
-            }
+            getFragmentManager().beginTransaction()
+                    .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
+                    .commit();
+
+
 
                 //attach the previously attached fragment
+                //-----
                 //if the mode is in Map Mode,
+                //try and find the map fragment to attach it to the fragment space
+                //if the map fragment does not exists create a new one
+                //and add it to the fragment space
             if(mIsInMapMode) {
 
-                //right now does nothing
-                //will eventually find the map fragment and reattach it to the view
+                //search for the map fragment
+                MapFragment mapFragment =
+                        (MapFragment) getFragmentManager().findFragmentByTag(TAG_MAP_FRAGMENT);
 
-
-                //else if in list mode (not in map mode)
-            } else {
-
-                //reattach the old location list fragment
-                //first check if exists
-                Fragment oldFragment = getFragmentManager()
-                        .findFragmentByTag(BlocSpotLocationListFragment.TAG_LOCATION_LIST_FRAGMENT);
-                if(oldFragment != null) {
+                    //if the map fragment does not exist create a new map fragment
+                    // and add it to the fragment space
+                if(mapFragment == null) {
+                    mapFragment = MapFragment.newInstance();
                     getFragmentManager().beginTransaction()
-                            .attach(oldFragment)
+                            .add(R.id.fl_activity_fragment, mapFragment, TAG_MAP_FRAGMENT)
                             .commit();
 
-                    //if the old fragment exists just reattach it
+                    //if the map fragment exists
+                    //attach the fragment to the fragment space
                 } else {
+                    getFragmentManager().beginTransaction()
+                            .attach(mapFragment)
+                            .commit();
+                }
 
-                        //create a new fragment if the previous one does not exist
-                    oldFragment = new BlocSpotLocationListFragment();
+
+                //if the mode is in List Mode,
+                //attempt to find the list fragment to attach it to the fragment space
+                //if the list fragment does not exists create a new one
+                //and add it to the fragment space instead
+            } else {
+
+                //check if the list fragment exists
+                Fragment listFragment = getFragmentManager()
+                        .findFragmentByTag(BlocSpotLocationListFragment.TAG_LOCATION_LIST_FRAGMENT);
+
+                    //if the list fragment does not exist
+                    //create a new list fragment
+                    //and add it to the fragment space
+                if(listFragment == null) {
+                    listFragment = new BlocSpotLocationListFragment();
                     getFragmentManager().beginTransaction()
                             .add(R.id.fl_activity_fragment,
-                                    oldFragment,
+                                    listFragment,
                                     BlocSpotLocationListFragment.TAG_LOCATION_LIST_FRAGMENT)
+                            .commit();
+
+                    //if the list fragment exists
+                    //attach it to the fragment space
+                } else {
+
+                    getFragmentManager().beginTransaction()
+                            .attach(listFragment)
                             .commit();
                 }
 
@@ -297,7 +333,6 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
         }
 
     }
-
 
         //This method handles the switching between the MapView fragment
         // and the location list fragment
@@ -311,88 +346,67 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
             Fragment locationListFragment = getFragmentManager()
                     .findFragmentByTag(BlocSpotLocationListFragment.TAG_LOCATION_LIST_FRAGMENT);
 
-            //if this fragment does not exist and the application is in MapMode
-            //detach the previous fragment (if exists) and add the new fragment
+            //detach the current fragment in the fragment space
+            getFragmentManager().beginTransaction()
+                    .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
+                    .commit();
+
+
+            //if the locationListFragment does not exist and the application is in MapMode
+            //first create a new locationListFragment then
+            // add the new locationListFragment to the fragment space
             if (locationListFragment == null) {
                 locationListFragment = new BlocSpotLocationListFragment();
                 getFragmentManager().beginTransaction()
-                        .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
                         .add(R.id.fl_activity_fragment,
                                 locationListFragment,
                                 BlocSpotLocationListFragment.TAG_LOCATION_LIST_FRAGMENT)
                         .commit();
 
-                //if the fragment is not null and the application is in MapMode
-                //detach the current fragment in the fragment space and
+                //if a locationListFragment does exist and the application is in MapMode
+                //attach the locationListFragment to the fragment space
             } else {
-
-                //reattach the locationListFragment to the activity_fragment
                 getFragmentManager().beginTransaction()
-                        .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
                         .attach(locationListFragment)
                         .commit();
 
             }
 
             //if the application is in ListMode
-            // switch the RecyclerView with the MapView
+            //detach the locationListFragment from fragment space
+            //and attach a MapFragment to the fragment space
         } else {
 
-            //get Map fragment here
-            MapFragment fragment =
+                //attempt to find the MapFragment
+            MapFragment mapFragment =
                     (MapFragment)getFragmentManager().findFragmentByTag(TAG_MAP_FRAGMENT);
 
-            //detach current fragment
+                //detach current fragment from the fragment space
             getFragmentManager().beginTransaction()
                     .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
                     .commit();
 
-            if(fragment == null) {
-                //create a new mapFragment
-                //attach the new fragment
-            } else {
-                //attach the old mapFragment
-            }
+                //if the mapFragment cannot be found create a new one
+                // and add it to the fragment space
+            if(mapFragment == null) {
+                mapFragment = MapFragment.newInstance();
+                getFragmentManager().beginTransaction()
+                        .add(R.id.fl_activity_fragment, mapFragment, TAG_MAP_FRAGMENT)
+                        .commit();
 
-
-            //check if the map fragment exists
-            //if not, create one, detach current fragment, 'add' this one
-
-            //else, detach current fragment, 'attach' this one
-
-            //dummy test
-            //check if there exists a fragment in the fragment_activity
-            boolean isEmpty = getFragmentManager()
-                    .findFragmentById(R.id.fl_activity_fragment) == null;
-
-            //if the map fragment does not exist, create fragment then
-            //if(locationMapFragment == null) {
-
-            //(dummyTest)if there is no fragment do nothing
-            if(isEmpty) {
-                //the following is for later use
-//                               locationMapFragment = new BlocSpotLocationMapFragment();
-//                                getFragmentManager().beginTransaction()
-//                                        .detach(getFragmentManager().findFragmentById(R.id.v_activity_fragment))
-//                                        .add(R.id.v_activity_fragment,
-//                                                locationMapFragment,
-//                                                BlocSpotLocationListFragment.TAG_LOCATION_MAP_FRAGMENT)
-//                                        .commit();
-
-                //else
+                //if the mapFragment already exists
+                //attach it to the fragment space
             } else {
                 getFragmentManager().beginTransaction()
-                        .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
-                                //.attach(getFragmentManager().findFragmentByTag(TAG_LOCATION_MAP_FRAGMENT)) //for later
+                        .attach(mapFragment)
                         .commit();
             }
 
         }
 
-        //toggle the MenuItem appearance
-        //toggle the MapMode
+            //toggle the MenuItem appearance
+            //toggle the MapMode
         toggleListMapMenuItem();
     }
 
-    //
 }
