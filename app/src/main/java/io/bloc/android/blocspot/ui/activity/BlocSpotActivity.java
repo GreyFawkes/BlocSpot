@@ -83,14 +83,6 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
     }
 
-    //-------------------------Interface Methods--------------------
-
-    //GoogleMap onReady method
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-    }
-
     //--------------------------private methods----------------------
 
     //initialize the toolbar
@@ -147,13 +139,13 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
     }
 
-        //changes the appearance of the MenuItem to switch between map and list
+    //changes the appearance of the MenuItem to switch between map and list
     private void toggleListMapMenuItem() {
 
-            //toggle mIsInMapMode
+        //toggle mIsInMapMode
         mIsInMapMode = !mIsInMapMode;
 
-            //if the map would be visible, show "View List"
+        //if the map would be visible, show "View List"
         if(mIsInMapMode) {
             mToolbar.getMenu()
                     .findItem(R.id.m_action_view_toggle_list_map)
@@ -169,9 +161,9 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
     }
 
-        //disables/enables items in the toolbar base on whether the
-        //user is searching for an item or not
-        //replaces the current fragment with a search fragment
+    //disables/enables items in the toolbar base on whether the
+    //user is searching for an item or not
+    //replaces the current fragment with a search fragment
     private void toggleSearchMenu() {
 
         //first change the value for SearchMode
@@ -182,12 +174,12 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
         // and disable all other items in the toolbar
         if(mIsInSearchMode) {
 
-                //remove the title from the toolbar
+            //remove the title from the toolbar
             mToolbar.setTitle("");
 
-                //change the title of the Search menuItem from 'Search' to 'Close'
-                ////TODO: change the icon of this menuItem from a 'magnifying glass' to  'X'
-                //disable other menuItems
+            //change the title of the Search menuItem from 'Search' to 'Close'
+            ////TODO: change the icon of this menuItem from a 'magnifying glass' to  'X'
+            //disable other menuItems
             Menu toolbarMenu = mToolbar.getMenu();
             toolbarMenu.findItem(R.id.m_action_search_locations)
                     .setTitle(getResources()
@@ -201,22 +193,22 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
                     .setVisible(false)
                     .setEnabled(false);
 
-                //make the searchbar VISIBLE
+            //make the searchbar VISIBLE
             findViewById(R.id.sv_blocspot_toolbar).setVisibility(View.VISIBLE);
 
 
-                //replace the current fragment with a search fragment
-                //if the search fragment does not currently exist, create one
+            //replace the current fragment with a search fragment
+            //if the search fragment does not currently exist, create one
             Fragment searchFragment = getFragmentManager()
                     .findFragmentByTag(BlocSpotSearchListFragment.TAG_SEARCH_LIST_FRAGMENT);
 
-                //detach the current fragment in the fragment space
+            //detach the current fragment in the fragment space
             getFragmentManager().beginTransaction()
                     .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
                     .commit();
 
-                //if the searchFragment does not exist create a new one
-                //then add it to the fragment space
+            //if the searchFragment does not exist create a new one
+            //then add it to the fragment space
             if(searchFragment == null) {
                 searchFragment = new BlocSpotSearchListFragment();
                 getFragmentManager().beginTransaction()
@@ -240,12 +232,12 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
             // disable the searchbar, and remove the search fragment and attach the old fragment
         } else {
 
-                //reassign the title to the toolbar
+            //reassign the title to the toolbar
             mToolbar.setTitle(getResources().getString(R.string.app_name));
 
-                //change the title of the Search menuItem from 'Close' to 'Search'
-                ////TODO: change the icon of this menuItem from a 'X' to a 'magnifying glass'
-                //enable the disabled menuItems
+            //change the title of the Search menuItem from 'Close' to 'Search'
+            ////TODO: change the icon of this menuItem from a 'X' to a 'magnifying glass'
+            //enable the disabled menuItems
             Menu toolbarMenu = mToolbar.getMenu();
             toolbarMenu.findItem(R.id.m_action_search_locations)
                     .setTitle(getResources()
@@ -259,30 +251,30 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
                     .setVisible(true)
                     .setEnabled(true);
 
-                //make the searchbar GONE
+            //make the searchbar GONE
             findViewById(R.id.sv_blocspot_toolbar).setVisibility(View.GONE);
 
-                //detach the search fragment
+            //detach the search fragment
             getFragmentManager().beginTransaction()
                     .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
                     .commit();
 
 
 
-                //attach the previously attached fragment
-                //-----
-                //if the mode is in Map Mode,
-                //try and find the map fragment to attach it to the fragment space
-                //if the map fragment does not exists create a new one
-                //and add it to the fragment space
+            //attach the previously attached fragment
+            //-----
+            //if the mode is in Map Mode,
+            //try and find the map fragment to attach it to the fragment space
+            //if the map fragment does not exists create a new one
+            //and add it to the fragment space
             if(mIsInMapMode) {
 
                 //search for the map fragment
                 MapFragment mapFragment =
                         (MapFragment) getFragmentManager().findFragmentByTag(TAG_MAP_FRAGMENT);
 
-                    //if the map fragment does not exist create a new map fragment
-                    // and add it to the fragment space
+                //if the map fragment does not exist create a new map fragment
+                // and add it to the fragment space
                 if(mapFragment == null) {
                     mapFragment = MapFragment.newInstance();
                     getFragmentManager().beginTransaction()
@@ -308,9 +300,9 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
                 Fragment listFragment = getFragmentManager()
                         .findFragmentByTag(BlocSpotLocationListFragment.TAG_LOCATION_LIST_FRAGMENT);
 
-                    //if the list fragment does not exist
-                    //create a new list fragment
-                    //and add it to the fragment space
+                //if the list fragment does not exist
+                //create a new list fragment
+                //and add it to the fragment space
                 if(listFragment == null) {
                     listFragment = new BlocSpotLocationListFragment();
                     getFragmentManager().beginTransaction()
@@ -334,8 +326,8 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
     }
 
-        //This method handles the switching between the MapView fragment
-        // and the location list fragment
+    //This method handles the switching between the MapView fragment
+    // and the location list fragment
     private void actionListMapItem() {
 
         //if the Application is currently in MapMode
@@ -377,17 +369,17 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
             //and attach a MapFragment to the fragment space
         } else {
 
-                //attempt to find the MapFragment
+            //attempt to find the MapFragment
             MapFragment mapFragment =
                     (MapFragment)getFragmentManager().findFragmentByTag(TAG_MAP_FRAGMENT);
 
-                //detach current fragment from the fragment space
+            //detach current fragment from the fragment space
             getFragmentManager().beginTransaction()
                     .detach(getFragmentManager().findFragmentById(R.id.fl_activity_fragment))
                     .commit();
 
-                //if the mapFragment cannot be found create a new one
-                // and add it to the fragment space
+            //if the mapFragment cannot be found create a new one
+            // and add it to the fragment space
             if(mapFragment == null) {
                 mapFragment = MapFragment.newInstance();
                 getFragmentManager().beginTransaction()
@@ -404,9 +396,19 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
         }
 
-            //toggle the MenuItem appearance
-            //toggle the MapMode
+        //toggle the MenuItem appearance
+        //toggle the MapMode
         toggleListMapMenuItem();
     }
+
+    //-------------------------Interface Methods--------------------
+
+    //GoogleMap onReady method
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+    }
+
+
 
 }

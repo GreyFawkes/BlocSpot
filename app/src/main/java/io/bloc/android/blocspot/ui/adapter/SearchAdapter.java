@@ -6,7 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import java.lang.ref.WeakReference;
 
 import io.bloc.android.blocspot.R;
 
@@ -23,10 +26,28 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     //private member variables
 
+
+    //interface for the adapter
+    public interface Callbacks {
+        void whenVisitedCheckboxToggled(boolean isChecked);
+    }
+
+    //--------interface variables--------
+    private WeakReference<Callbacks> callbacks;
+
+    //--------callbacks methods----------
+    public Callbacks getCallbacks() {
+        if(callbacks == null) return null;
+        return callbacks.get();
+    }
+
+    public void setCallbacks(Callbacks callbacks) {
+        this.callbacks = new WeakReference<Callbacks>(callbacks);
+    }
+
+
     //dummy data
     private String storedData[];
-
-
 
     //Constructor for the Adapter
     public SearchAdapter(Context context) {
@@ -49,9 +70,29 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             super(view);
 
             //wire up the elements in the View
+            initUI(view);
+
+            //set up listeners
+            initListeners();
+
+        }
+
+        //-----private methods for viewHolder Class-----
+
+            //method to wire up the holder elements
+        private void initUI(View view) {
             mTextView = (TextView) view.findViewById(R.id.tv_stored_location_name);
             mCheckBox = (CheckBox) view.findViewById(R.id.cb_stored_location_has_visited);
+        }
 
+            //implement the holder listeners
+        private void initListeners() {
+            mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    getCallbacks().whenVisitedCheckboxToggled(isChecked);
+                }
+            });
         }
     }
 

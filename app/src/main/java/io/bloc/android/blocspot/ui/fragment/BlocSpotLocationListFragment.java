@@ -55,12 +55,6 @@ public class BlocSpotLocationListFragment extends Fragment
 
 
         //performs the following when the user presses the options button
-    @Override
-    public void test(String string) {
-        Toast.makeText(getActivity(), string, Toast.LENGTH_SHORT).show();
-    }
-
-        //performs the following when the user presses the options button
         //on any of the location item views
     @Override
     public void whenOptionsButtonPressed() {
@@ -72,8 +66,23 @@ public class BlocSpotLocationListFragment extends Fragment
 
             //post the dialog as an alertDialog
         optionsDialog.show(getFragmentManager(),
-                optionsDialog.TAG_LOCATION_OPTIONS_DIALOG_FRAGMENT);
+                BlocSpotLocationItemOptionsDialog.TAG_LOCATION_OPTIONS_DIALOG_FRAGMENT);
 
+
+    }
+
+    @Override
+    public void whenVisitedCheckboxToggled(boolean isChecked) {
+
+        String message;
+
+        if(isChecked){
+            message = "is Checked";
+        } else {
+            message = "is not Checked";
+        }
+
+        Toast.makeText(getActivity(), "location has visited checkbox is " + message , Toast.LENGTH_SHORT).show();
 
     }
 

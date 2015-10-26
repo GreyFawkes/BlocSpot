@@ -6,7 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import java.lang.ref.WeakReference;
 
 import io.bloc.android.blocspot.R;
 
@@ -24,10 +27,26 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     //private member variables
 
+    //--------interfaces----------
+    public interface Callbacks {
+        void whenSetCategoryToggled(boolean isChecked);
+    }
+
+    //---------interface variables-----------
+    private WeakReference<Callbacks> callbacks;
+
+    //--------interface methods----------
+    public Callbacks getCallbacks() {
+        if(callbacks == null) return null;
+        return callbacks.get();
+    }
+
+    public void setCallbacks(Callbacks callbacks) {
+        this.callbacks = new WeakReference<Callbacks>(callbacks);
+    }
+
         //dummy data
     private String data[];
-
-
 
         //Constructor for the Adapter
     public CategoryAdapter(Context context) {
@@ -50,9 +69,30 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             super(view);
 
             //wire up the elements in the View
+            initUI(view);
+
+            //set up the listeners
+            initListeners();
+
+
+        }
+
+        //-----private methods for viewHolder class
+
+            //void method to wire up the elements in each holder
+        private void initUI(View view) {
             mTextView = (TextView) view.findViewById(R.id.tv_category_name);
             mCheckBox = (CheckBox) view.findViewById(R.id.cb_set_category);
+        }
 
+            //listeners for each element in the holder if needed
+        private void initListeners() {
+            mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    getCallbacks().whenSetCategoryToggled(isChecked);
+                }
+            });
         }
     }
 

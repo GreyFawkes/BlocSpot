@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import io.bloc.android.blocspot.R;
@@ -19,14 +20,16 @@ import io.bloc.android.blocspot.ui.adapter.CategoryAdapter;
 /**
  * Created by Administrator on 10/15/2015.
  */
-public class BlocSpotFilterDialogFragment extends DialogFragment {
+public class BlocSpotFilterDialogFragment extends DialogFragment
+    implements CategoryAdapter.Callbacks{
 
     //public static final Variables
     public static final String FILTER_DIALOG_ARGS = "filterDialogArgs";
 
     //private static final variables
 
-    //member variables
+        //member variables
+    ImageButton mImageButton;
 
         //RecyclerView variables
     private RecyclerView mRecyclerView;
@@ -57,16 +60,15 @@ public class BlocSpotFilterDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-            //inflate the view
+        //inflate the view
         View view = inflater.inflate(R.layout.dialog_fragment_blocspot_filter,
                 container, false);
 
-            //initialize all view elements
+        //initialize all view elements
         initUI(view);
 
-
-            //set up listeners
-
+        //set up listeners
+        initListeners();
 
 
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -83,10 +85,8 @@ public class BlocSpotFilterDialogFragment extends DialogFragment {
         //initialize all view elements
         initUI(view);
 
-
         //set up listeners
-
-
+        initListeners();
 
         //if a dialog is created, show the following
         return new AlertDialog.Builder(getActivity())
@@ -101,10 +101,25 @@ public class BlocSpotFilterDialogFragment extends DialogFragment {
 
     }
 
+    //------------Implemented callback methods--------
+
+    @Override
+    public void whenSetCategoryToggled(boolean isChecked) {
+
+        String message;
+
+        message = isChecked ? "isChecked" : "is not Checked";
+
+        Toast.makeText(getActivity(), "This category " + message, Toast.LENGTH_SHORT).show();
+    }
+
     //------------private methods-----------
 
         //initialize all UI dialog elements
     private void initUI(View view) {
+
+            //wire up ImageButton
+        mImageButton = (ImageButton) view.findViewById(R.id.btn_dialog_filter_add_catagory);
 
             //wire up RecyclerView
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_filter_catagories);
@@ -117,10 +132,17 @@ public class BlocSpotFilterDialogFragment extends DialogFragment {
         mAdapter = new CategoryAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
+        mAdapter.setCallbacks(this);
+
     }
 
-        //initialize repeat Listeners
+        //initialize listeners
     private void initListeners() {
-
+        mImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Category Added", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

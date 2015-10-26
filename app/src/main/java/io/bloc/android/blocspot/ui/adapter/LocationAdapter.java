@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
@@ -30,11 +31,10 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     //dummy data
     private String data[];
 
-
     //Interface methods needed here...
     public interface Callbacks {
-        void test(String string);
         void whenOptionsButtonPressed();
+        void whenVisitedCheckboxToggled(boolean isChecked);
     }
 
     //interface variables here
@@ -72,22 +72,45 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
             super(view);
 
             //wire up the elements in the View
+            initUI(view);
+
+            //set up listeners
+            initListeners();
+
+
+
+
+
+        }
+
+        //--------private holder class methods------------
+
+            //this method wires up all of the UI elements into code
+        private void initUI(View view) {
             mTextView = (TextView) view.findViewById(R.id.tv_location_item_name);
             mCheckBox = (CheckBox) view.findViewById(R.id.cb_location_item_has_visited);
             mOptionsButton = (Button) view.findViewById(R.id.btn_location_item_options);
+        }
 
+        private void initListeners() {
             mOptionsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    getCallbacks().test("Hi");
+                        //perform the action described in BlocSpotLocationListFragment
                     getCallbacks().whenOptionsButtonPressed();
 
                 }
             });
 
+            mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-
+                        //perform the action described in BlocSpotLocationListFragment
+                    getCallbacks().whenVisitedCheckboxToggled(isChecked);
+                }
+            });
         }
 
     }

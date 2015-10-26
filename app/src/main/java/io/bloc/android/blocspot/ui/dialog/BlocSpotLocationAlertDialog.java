@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +30,7 @@ public class BlocSpotLocationAlertDialog extends DialogFragment{
 
     //member variables
     private CheckBox mCheckBoxHasVisited;
-    private Button mButtonCatagory, mButtonNavigateTo, mButtonShare, mButtonDelete;
+    private Button mButtonCategory, mButtonNavigateTo, mButtonShare, mButtonDelete;
     private TextView mTextViewLocationName, mTextViewLocationNotes;
 
 
@@ -42,7 +43,7 @@ public class BlocSpotLocationAlertDialog extends DialogFragment{
         return dialogFragment;
     }
 
-    //--------------------onCreate
+    //--------------------onCreate---------
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class BlocSpotLocationAlertDialog extends DialogFragment{
 
     }
 
-    //--------------------onCreateView
+    //--------------------onCreateView----------
 
     @Nullable
     @Override
@@ -64,15 +65,14 @@ public class BlocSpotLocationAlertDialog extends DialogFragment{
         //initialize all view elements
         initUI(view);
 
-
         //set up listeners
-
+        initListeners();
 
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    //-----------------------onCreateDialog
+    //-----------------------onCreateDialog-----
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -83,9 +83,8 @@ public class BlocSpotLocationAlertDialog extends DialogFragment{
         //initialize all view elements
         initUI(view);
 
-
         //set up listeners
-
+        initListeners();
 
 
         //if a dialog is created, show the following
@@ -107,7 +106,7 @@ public class BlocSpotLocationAlertDialog extends DialogFragment{
     private void initUI(View view) {
 
             //wire up the buttons
-        mButtonCatagory = (Button) view.findViewById(R.id.btn_alert_dialog_location_category);
+        mButtonCategory = (Button) view.findViewById(R.id.btn_alert_dialog_location_category);
         mButtonDelete = (Button) view.findViewById(R.id.btn_alert_dialog_delete);
         mButtonNavigateTo = (Button) view.findViewById(R.id.btn_alert_dialog_navigateTo);
         mButtonShare = (Button) view.findViewById(R.id.btn_alert_dialog_share);
@@ -123,6 +122,53 @@ public class BlocSpotLocationAlertDialog extends DialogFragment{
 
     //initialize repeat Listeners
     private void initListeners() {
+
+        mButtonCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Do something with category", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mButtonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Delete this location from memory", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mButtonNavigateTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Navigate to this location", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mButtonShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Share this location", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mCheckBoxHasVisited.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String message;
+
+                    //is the checkbox, checked
+
+                if(isChecked) { //Yes
+                    message = "user has visited this location";
+
+                } else {        //No
+                    message = "user has not visited this location";
+                }
+
+                    //display the message
+                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 }

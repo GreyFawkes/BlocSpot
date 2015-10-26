@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import io.bloc.android.blocspot.R;
 import io.bloc.android.blocspot.ui.adapter.SearchAdapter;
@@ -15,7 +16,8 @@ import io.bloc.android.blocspot.ui.adapter.SearchAdapter;
 /**
  * Created by Administrator on 10/18/2015.
  */
-public class BlocSpotSearchListFragment extends Fragment{
+public class BlocSpotSearchListFragment extends Fragment
+    implements SearchAdapter.Callbacks{
 
     //private static final variables
 
@@ -48,6 +50,23 @@ public class BlocSpotSearchListFragment extends Fragment{
     }
 
 
+    //------------Implemented methods--------
+
+
+    @Override
+    public void whenVisitedCheckboxToggled(boolean isChecked) {
+
+        String message;
+
+        if(isChecked) {
+            message = "is Checked";
+        } else {
+            message = "is not Checked";
+        }
+
+        Toast.makeText(getActivity(), "This item " + message, Toast.LENGTH_SHORT).show();
+    }
+
     //------------private methods-----------
 
     //initialize all UI dialog elements
@@ -64,11 +83,13 @@ public class BlocSpotSearchListFragment extends Fragment{
         mAdapter = new SearchAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
+        //for the adapter, use the callback methods implemented in this class
+        mAdapter.setCallbacks(this);
+
     }
 
     //initialize repeat Listeners
     private void initListeners() {
 
     }
-
 }
