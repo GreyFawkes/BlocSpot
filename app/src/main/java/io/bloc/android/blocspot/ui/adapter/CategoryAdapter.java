@@ -39,7 +39,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
     //---------interface variables-----------
-    private WeakReference<Delegate> callbacks;
+    private WeakReference<Delegate> delegate;
     private WeakReference<DataSource> dataSource;
 
     //--------interface methods----------
@@ -51,13 +51,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         this.dataSource = new WeakReference<DataSource>(dataSource);
     }
 
-    public Delegate getCallbacks() {
-        if(callbacks == null) return null;
-        return callbacks.get();
+    public Delegate getDelegate() {
+        if(delegate == null) return null;
+        return delegate.get();
     }
 
-    public void setCallbacks(Delegate delegate) {
-        this.callbacks = new WeakReference<Delegate>(delegate);
+    public void setDelegate(Delegate delegate) {
+        this.delegate = new WeakReference<Delegate>(delegate);
     }
 
         //--------dummy data-----------
@@ -106,9 +106,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    getCallbacks().whenSetCategoryToggled(isChecked);
+                    getDelegate().whenSetCategoryToggled(isChecked);
                 }
             });
+        }
+
+        private void update(CategoryItem categoryItem) {
+            mTextView.setText(categoryItem.getCategoryName());
         }
     }
 
@@ -135,8 +139,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
             //replace the stuff inside of the view with the stuff in data
 
-        viewHolder.mTextView.setText(data[i]);
+        if(getDataSource() == null) {
+            return;
+        }
 
+            //get the category item from the database
+        CategoryItem categoryItem = getDataSource().getCategoryItem(this, i);
+            //update the view
+        viewHolder.update(categoryItem);
 
     }
 
@@ -145,5 +155,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     public int getItemCount() {
         return data.length;
     }
+
+
 
 }

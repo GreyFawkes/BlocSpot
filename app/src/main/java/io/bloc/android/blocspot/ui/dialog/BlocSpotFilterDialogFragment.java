@@ -27,7 +27,9 @@ import io.bloc.android.blocspot.ui.adapter.CategoryAdapter;
  * Created by Administrator on 10/15/2015.
  */
 public class BlocSpotFilterDialogFragment extends DialogFragment
-    implements CategoryAdapter.Delegate {
+    implements
+        CategoryAdapter.Delegate,
+        CategoryAdapter.DataSource{
 
     //public static final Variables
     public static final String FILTER_DIALOG_ARGS = "filterDialogArgs";
@@ -112,7 +114,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
 
     }
 
-    //------------Implemented callback methods--------
+    //------------Implemented delegate methods--------
 
     @Override
     public void whenSetCategoryToggled(boolean isChecked) {
@@ -122,6 +124,18 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
         message = isChecked ? "isChecked" : "is not Checked";
 
         Toast.makeText(getActivity(), "This category " + message, Toast.LENGTH_SHORT).show();
+    }
+
+    //------------Implemented DataSource methods--------
+
+    @Override
+    public CategoryItem getCategoryItem(CategoryAdapter categoryAdapter, int position) {
+        return mCategoryItems.get(position);
+    }
+
+    @Override
+    public int getItemCount(CategoryAdapter categoryAdapter) {
+        return mCategoryItems.size();
     }
 
     //------------private methods-----------
@@ -143,7 +157,9 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
         mAdapter = new CategoryAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
-        mAdapter.setCallbacks(this);
+            //set the Delegate and the DataSource
+        mAdapter.setDelegate(this);
+        mAdapter.setDataSource(this);
 
     }
 
@@ -164,9 +180,6 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
         );
     }
 
-
-
-
         //initialize listeners
     private void initListeners() {
         mImageButton.setOnClickListener(new View.OnClickListener() {
@@ -176,5 +189,4 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
             }
         });
     }
-
 }
