@@ -14,14 +14,20 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.bloc.android.blocspot.BlocSpotApplication;
 import io.bloc.android.blocspot.R;
+import io.bloc.android.blocspot.api.DataSource;
+import io.bloc.android.blocspot.api.model.CategoryItem;
 import io.bloc.android.blocspot.ui.adapter.CategoryAdapter;
 
 /**
  * Created by Administrator on 10/15/2015.
  */
 public class BlocSpotFilterDialogFragment extends DialogFragment
-    implements CategoryAdapter.Callbacks{
+    implements CategoryAdapter.Delegate {
 
     //public static final Variables
     public static final String FILTER_DIALOG_ARGS = "filterDialogArgs";
@@ -35,6 +41,9 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
     private RecyclerView mRecyclerView;
     private CategoryAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+        //List variables
+    private List<CategoryItem> mCategoryItems = new ArrayList<CategoryItem>();
 
         //newInstance method
     public static BlocSpotFilterDialogFragment newInstance() {
@@ -50,6 +59,8 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
     }
 
@@ -136,6 +147,26 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
 
     }
 
+    private void initCategoryItems() {
+        BlocSpotApplication.getSharedDataSource().fetchCategoryItems(
+                new DataSource.Callback<List<CategoryItem>>() {
+                    @Override
+                    public void onSuccess(List<CategoryItem> categoryItems) {
+                        mCategoryItems.addAll(categoryItems);
+                        //add list to the recyclerview
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        //nada/not possible
+                    }
+                }
+        );
+    }
+
+
+
+
         //initialize listeners
     private void initListeners() {
         mImageButton.setOnClickListener(new View.OnClickListener() {
@@ -145,4 +176,5 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
             }
         });
     }
+
 }

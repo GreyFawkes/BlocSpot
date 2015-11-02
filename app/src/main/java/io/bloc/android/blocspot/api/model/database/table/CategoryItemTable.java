@@ -38,14 +38,10 @@ public class CategoryItemTable extends Table {
                 new String[]{COLUMN_NAME});
     }
 
-        //------getters for this table class
+        //------getters for this table name
     @Override
     public String getTableName() {
         return TABLE_NAME;
-    }
-
-    public String getCategoryName(Cursor cursor) {
-        return getString(cursor, COLUMN_NAME);
     }
 
         //The table creation statement for the CategoryItems
@@ -56,6 +52,11 @@ public class CategoryItemTable extends Table {
                 + COLUMN_ID + "INTEGER PRIMARY KEY"
                 + COLUMN_NAME + "TEXT"
                 + ")";
+    }
+
+        //public static methods for getting values from a Cursor
+    public static String getCategoryName(Cursor cursor) {
+        return getString(cursor, COLUMN_NAME);
     }
 
 

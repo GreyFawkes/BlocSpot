@@ -406,7 +406,7 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
     //GoogleMap onReady method
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
+        googleMap.setMyLocationEnabled(true);
     }
 
 

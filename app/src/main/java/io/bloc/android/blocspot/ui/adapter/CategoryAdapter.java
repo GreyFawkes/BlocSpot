@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.lang.ref.WeakReference;
 
 import io.bloc.android.blocspot.R;
+import io.bloc.android.blocspot.api.model.CategoryItem;
 
 /**
  * Created by Administrator on 10/15/2015.
@@ -28,33 +29,48 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     //private member variables
 
     //--------interfaces----------
-    public interface Callbacks {
+    public interface DataSource {
+        CategoryItem getCategoryItem(CategoryAdapter categoryAdapter, int position);
+        int getItemCount(CategoryAdapter categoryAdapter);
+    }
+
+    public interface Delegate {
         void whenSetCategoryToggled(boolean isChecked);
     }
 
     //---------interface variables-----------
-    private WeakReference<Callbacks> callbacks;
+    private WeakReference<Delegate> callbacks;
+    private WeakReference<DataSource> dataSource;
 
     //--------interface methods----------
-    public Callbacks getCallbacks() {
+    public DataSource getDataSource() {
+        if(dataSource == null) return null;
+        return dataSource.get();
+    }
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = new WeakReference<DataSource>(dataSource);
+    }
+
+    public Delegate getCallbacks() {
         if(callbacks == null) return null;
         return callbacks.get();
     }
 
-    public void setCallbacks(Callbacks callbacks) {
-        this.callbacks = new WeakReference<Callbacks>(callbacks);
+    public void setCallbacks(Delegate delegate) {
+        this.callbacks = new WeakReference<Delegate>(delegate);
     }
 
-        //dummy data
+        //--------dummy data-----------
     private String data[];
 
-        //Constructor for the Adapter
+        //---Constructor for the Adapter----
     public CategoryAdapter(Context context) {
 
             //dummy data
         data = context.getResources().getStringArray(R.array.dummy_values_cat);
     }
 
+    //--------------------------------------
 
     //The View Holder
     /*
@@ -121,11 +137,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
         viewHolder.mTextView.setText(data[i]);
 
+
     }
 
-        //get the size if the dataset
+        //get the size of the dataset
     @Override
     public int getItemCount() {
         return data.length;
     }
+
 }
