@@ -154,10 +154,10 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
     public void onDialogOkPressed(String categoryTitle) {
             //add a new item to the CategoryItemTable with info from addItemDialog
         BlocSpotApplication.getSharedDataSource().addCategoryItem(categoryTitle);
-        //// TODO: 11/5/2015 why does initCategoryDataSet not cause all the views to update in the adapter 
+        //// TODO: 11/5/2015 why does initCategoryDataSet not cause all the views to update in the adapter
 //        initCategoryDataSet();  //for some reason this does not refresh the entire list
 
-            //so instead I will add the item to the end of the list
+            //so instead I will add the item to the end of the list,
             //if the user makes a new filterDialog the list will be sorted
         CategoryItem newItem = BlocSpotApplication.getSharedDataSource()
                 .getCategoryItemByTitle(categoryTitle);

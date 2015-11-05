@@ -137,6 +137,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
 
+            //Todo: use a cursor a or cursor adapter to fix the refresh problems (ListAdapter)
             //replace the stuff inside of the view with the stuff in data
 
         if(getDataSource() == null) {
