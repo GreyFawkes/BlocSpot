@@ -67,13 +67,13 @@ public class DataSource {
 
                 //Table Builders go here
             new CategoryItemTable.Builder()
-                    .setCatagoryName("Cat 1")
+                    .setCatagoryName("Cat Z")
                     .insert(writeableDatabase);
             new CategoryItemTable.Builder()
-                    .setCatagoryName("Cat 2")
+                    .setCatagoryName("Cat B")
                     .insert(writeableDatabase);
             new CategoryItemTable.Builder()
-                    .setCatagoryName("Cat 3")
+                    .setCatagoryName("Cat C")
                     .insert(writeableDatabase);
 
         }
@@ -116,6 +116,13 @@ public class DataSource {
             }
         });
 
+    }
+
+        //add a new category to the database table
+    public void addCategoryItem(String categoryTitle) {
+        new CategoryItemTable.Builder()
+                .setCatagoryName(categoryTitle)
+                .insert(mDatabaseOpenHelper.getWritableDatabase());
     }
 
     private CategoryItem categoryItemFromCursor(Cursor cursor) {

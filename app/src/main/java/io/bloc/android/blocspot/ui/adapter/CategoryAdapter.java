@@ -61,13 +61,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
         //--------dummy data-----------
-    private String data[];
+    //private String data[];
 
         //---Constructor for the Adapter----
     public CategoryAdapter(Context context) {
 
             //dummy data
-        data = context.getResources().getStringArray(R.array.dummy_values_cat);
+      // data = context.getResources().getStringArray(R.array.dummy_values_cat);
     }
 
     //--------------------------------------
@@ -153,7 +153,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         //get the size of the dataset
     @Override
     public int getItemCount() {
-        return data.length;
+
+        if(getDataSource() == null) {
+            return 0;
+        }
+        return getDataSource().getItemCount(this);
     }
 
 

@@ -29,7 +29,8 @@ import io.bloc.android.blocspot.ui.adapter.CategoryAdapter;
 public class BlocSpotFilterDialogFragment extends DialogFragment
     implements
         CategoryAdapter.Delegate,
-        CategoryAdapter.DataSource{
+        CategoryAdapter.DataSource,
+        BlocSpotDialogAddCategory.Callbacks{
 
     //public static final Variables
     public static final String FILTER_DIALOG_ARGS = "filterDialogArgs";
@@ -43,6 +44,8 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
     private RecyclerView mRecyclerView;
     private CategoryAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    BlocSpotDialogAddCategory mAddCategoryDialog = BlocSpotDialogAddCategory.newInstance();
 
         //List variables
     private List<CategoryItem> mCategoryItems = new ArrayList<CategoryItem>();
@@ -62,7 +65,12 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //when creating the fragment fetch all of the category items
+        // that will be placed into the list
+        updateCategoryDataSet();
 
+        //set callbacks from the addCategoryDialog
+        mAddCategoryDialog.setCallbacks(this);
 
     }
 
@@ -130,12 +138,22 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
 
     @Override
     public CategoryItem getCategoryItem(CategoryAdapter categoryAdapter, int position) {
+        if(mCategoryItems.size() == 0) {
+            return new CategoryItem(0,"nothing here");
+        }
         return mCategoryItems.get(position);
     }
 
     @Override
     public int getItemCount(CategoryAdapter categoryAdapter) {
         return mCategoryItems.size();
+    }
+
+    //------------Implemented Callbacks methods
+    @Override
+    public void passNewCategoryInfo(String categoryTitle) {
+        BlocSpotApplication.getSharedDataSource().addCategoryItem(categoryTitle);
+        updateCategoryDataSet();
     }
 
     //------------private methods-----------
@@ -163,29 +181,36 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
 
     }
 
-    private void initCategoryItems() {
-        BlocSpotApplication.getSharedDataSource().fetchCategoryItems(
-                new DataSource.Callback<List<CategoryItem>>() {
-                    @Override
-                    public void onSuccess(List<CategoryItem> categoryItems) {
-                        mCategoryItems.addAll(categoryItems);
-                        //add list to the recyclerview
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        //nada/not possible
-                    }
-                }
-        );
-    }
-
-        //initialize listeners
+    //initialize listeners
     private void initListeners() {
+
         mImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Category Added", Toast.LENGTH_SHORT).show();
+                mAddCategoryDialog.show(getFragmentManager(),
+                        BlocSpotDialogAddCategory.TAG_ADD_CATEGORY_DIALOG_FRAGMENT);
+            }
+        });
+    }
+
+    //setup the dataset for the categories
+    private void updateCategoryDataSet() {
+
+        BlocSpotApplication.getSharedDataSource().fetchCategoryItems(new DataSource.Callback<List<CategoryItem>>() {
+            @Override
+            public void onSuccess(List<CategoryItem> categoryItems) {
+                if(getActivity() == null) {
+                    return;
+                }
+
+                mCategoryItems = categoryItems;
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+
             }
         });
     }

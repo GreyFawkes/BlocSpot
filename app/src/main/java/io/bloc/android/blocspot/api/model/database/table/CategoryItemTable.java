@@ -3,6 +3,7 @@ package io.bloc.android.blocspot.api.model.database.table;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 
 /**
  * Created by Administrator on 11/1/2015.
@@ -32,10 +33,29 @@ public class CategoryItemTable extends Table {
         }
     }
 
+        //fetch all Category Items in Ascending order in a cursor
     public static Cursor fetchAllCategories(SQLiteDatabase readOnlyDatabase) {
-        return readOnlyDatabase.rawQuery(
-                "SELECT * FROM " + TABLE_NAME + "ORDER BY " + COLUMN_NAME,
-                new String[]{COLUMN_NAME});
+
+            //this method is the SKD is JellyBean or above
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            return readOnlyDatabase.query(
+                    true,
+                    TABLE_NAME,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    COLUMN_NAME,
+                    null,
+                    null);
+
+        } else { // otherwise use a raw query
+
+            return readOnlyDatabase.rawQuery(
+                  "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_NAME + " ASC", null);
+        }
+
     }
 
         //------getters for this table name
@@ -49,8 +69,8 @@ public class CategoryItemTable extends Table {
     public String getCreateStatement() {
         return "CREATE TABLE " + getTableName()
                 + " ("
-                + COLUMN_ID + "INTEGER PRIMARY KEY"
-                + COLUMN_NAME + "TEXT"
+                + COLUMN_ID + " INTEGER PRIMARY KEY, "
+                + COLUMN_NAME + " TEXT"
                 + ")";
     }
 
