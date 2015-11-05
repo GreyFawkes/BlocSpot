@@ -67,7 +67,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
 
         //when creating the fragment fetch all of the category items
         // that will be placed into the list
-        updateCategoryDataSet();
+        initCategoryDataSet();
 
         //set callbacks from the addCategoryDialog
         mAddCategoryDialog.setCallbacks(this);
@@ -151,9 +151,25 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
 
     //------------Implemented Callbacks methods
     @Override
-    public void passNewCategoryInfo(String categoryTitle) {
+    public void onDialogOkPressed(String categoryTitle) {
+            //add a new item to the CategoryItemTable with info from addItemDialog
         BlocSpotApplication.getSharedDataSource().addCategoryItem(categoryTitle);
-        updateCategoryDataSet();
+        //// TODO: 11/5/2015 why does initCategoryDataSet not cause all the views to update in the adapter 
+//        initCategoryDataSet();  //for some reason this does not refresh the entire list
+
+            //so instead I will add the item to the end of the list
+            //if the user makes a new filterDialog the list will be sorted
+        CategoryItem newItem = BlocSpotApplication.getSharedDataSource()
+                .getCategoryItemByTitle(categoryTitle);
+        if(newItem != null) {
+            mCategoryItems.add(newItem);
+            Toast.makeText(
+                    getActivity(),
+                    "new category added (will be at the bottom)",
+                    Toast.LENGTH_SHORT).show();
+           // mAdapter.notifyDataSetChanged(); I don't seem to need this????
+        }
+
     }
 
     //------------private methods-----------
@@ -195,7 +211,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
     }
 
     //setup the dataset for the categories
-    private void updateCategoryDataSet() {
+    private void initCategoryDataSet() {
 
         BlocSpotApplication.getSharedDataSource().fetchCategoryItems(new DataSource.Callback<List<CategoryItem>>() {
             @Override
@@ -204,9 +220,8 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
                     return;
                 }
 
-                // TODO: 11/4/2015 figure out why only the 'last' item in the list is being re-rendered when adding a new item to the list
                 mCategoryItems = categoryItems;
-                mAdapter.notifyDataSetChanged();
+                //mAdapter.notifyDataSetChanged(); I don;t seem to need this???
 
             }
 
@@ -217,5 +232,12 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
         });
 
     }
+
+        //method that is executed when a new category is added to the list
+    private void onAddNewCategory() {
+        int itemCount = mAdapter.getItemCount();
+
+    }
+
 
 }

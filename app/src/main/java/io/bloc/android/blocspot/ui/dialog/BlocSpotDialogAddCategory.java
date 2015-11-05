@@ -37,7 +37,7 @@ public class BlocSpotDialogAddCategory extends DialogFragment {
 
     //callback interface
     public interface Callbacks {
-        void passNewCategoryInfo(String categoryTitle);
+        void onDialogOkPressed(String categoryTitle);
     }
 
     //callback variables
@@ -52,9 +52,6 @@ public class BlocSpotDialogAddCategory extends DialogFragment {
         if(callbacks == null) return null;
         return callbacks.get();
     }
-
-
-
 
     //newInstance method
     public static BlocSpotDialogAddCategory newInstance() {
@@ -117,7 +114,7 @@ public class BlocSpotDialogAddCategory extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(getActivity(), "This options dialog works", Toast.LENGTH_SHORT).show();
-                        getCallbacks().passNewCategoryInfo(mCategoryTitle);
+                        getCallbacks().onDialogOkPressed(mCategoryTitle);
                     }
                 }).create();
 

@@ -11,8 +11,8 @@ import android.os.Build;
 public class CategoryItemTable extends Table {
 
     //static final variables
-    private static final String TABLE_NAME = "category_items";
-    private static final String COLUMN_NAME = "name";
+    public static final String TABLE_NAME = "category_items";
+    public static final String COLUMN_NAME = "name";
 
 
     public static class Builder implements Table.Builder {

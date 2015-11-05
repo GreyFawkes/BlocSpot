@@ -2,6 +2,7 @@ package io.bloc.android.blocspot.api;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Handler;
 
 import java.util.ArrayList;
@@ -91,20 +92,20 @@ public class DataSource {
         submitTask(new Runnable() {
             @Override
             public void run() {
-                    //create an arraylist for the categoryItems
+                //create an arraylist for the categoryItems
                 final List<CategoryItem> categoryItems = new ArrayList<CategoryItem>();
 
-                    //get the cursor with the table information
+                //get the cursor with the table information
                 Cursor cursor = CategoryItemTable.fetchAllCategories(
                         mDatabaseOpenHelper.getReadableDatabase());
 
-                    //check if the cursor is empty
-                    //start adding the items to the list
-                    //close the cursor
-                if(cursor.moveToFirst()) {
+                //check if the cursor is empty
+                //start adding the items to the list
+                //close the cursor
+                if (cursor.moveToFirst()) {
                     do {
                         categoryItems.add(categoryItemFromCursor(cursor));
-                    }while (cursor.moveToNext());
+                    } while (cursor.moveToNext());
                     cursor.close();
                 }
                 callbackThreadHandler.post(new Runnable() {
@@ -125,11 +126,47 @@ public class DataSource {
                 .insert(mDatabaseOpenHelper.getWritableDatabase());
     }
 
+        //returns a CategoryItem from the Table
+    public CategoryItem getCategoryItemByTitle(String categoryTitle) {
+        Cursor cursor;
+        String tableName = CategoryItemTable.TABLE_NAME;
+        String columnName = CategoryItemTable.COLUMN_NAME;
+        String[] selectionArgs = new String[]{categoryTitle};
+            //get the cursor needed to build the CategoryItem
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            cursor = mDatabaseOpenHelper.getReadableDatabase().query(
+                    true,tableName,null,columnName+" = ?",selectionArgs,null,null,null,null
+            );
+        } else {
+            String query = "SELECT * FROM " + tableName + " WHERE " + columnName + "= ?";
+            cursor = mDatabaseOpenHelper.getReadableDatabase().rawQuery(
+                    query, selectionArgs
+            );
+        }
+
+        if(cursor.moveToFirst()) {
+            return categoryItemFromCursorAndCloseCursor(cursor);
+        }
+        cursor.close();
+        return null;
+
+    }
+
     private CategoryItem categoryItemFromCursor(Cursor cursor) {
         return new CategoryItem(
                 CategoryItemTable.getRowId(cursor),
                 CategoryItemTable.getCategoryName(cursor)
         );
+    }
+
+    private CategoryItem categoryItemFromCursorAndCloseCursor(Cursor cursor) {
+        CategoryItem item = new CategoryItem(
+                CategoryItemTable.getRowId(cursor),
+                CategoryItemTable.getCategoryName(cursor)
+        );
+
+        cursor.close();
+        return item;
     }
 
     private void submitTask(Runnable task) {
