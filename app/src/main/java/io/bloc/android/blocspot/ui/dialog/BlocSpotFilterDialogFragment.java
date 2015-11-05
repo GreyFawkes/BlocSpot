@@ -200,12 +200,14 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
         BlocSpotApplication.getSharedDataSource().fetchCategoryItems(new DataSource.Callback<List<CategoryItem>>() {
             @Override
             public void onSuccess(List<CategoryItem> categoryItems) {
-                if(getActivity() == null) {
+                if (getActivity() == null) {
                     return;
                 }
 
+                // TODO: 11/4/2015 figure out why only the 'last' item in the list is being re-rendered when adding a new item to the list
                 mCategoryItems = categoryItems;
                 mAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -213,5 +215,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
 
             }
         });
+
     }
+
 }
