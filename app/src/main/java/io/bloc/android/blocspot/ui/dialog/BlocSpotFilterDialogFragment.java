@@ -32,6 +32,8 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
         CategoryAdapter.DataSource,
         BlocSpotDialogAddCategory.Callbacks{
 
+    // // TODO: 11/6/2015 add implementation for the is-Checked values in the db
+
     //public static final Variables
     public static final String FILTER_DIALOG_ARGS = "filterDialogArgs";
 
@@ -139,7 +141,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
     @Override
     public CategoryItem getCategoryItem(CategoryAdapter categoryAdapter, int position) {
         if(mCategoryItems.size() == 0) {
-            return new CategoryItem(0,"nothing here");
+            return new CategoryItem(0,"nothing here", false);
         }
         return mCategoryItems.get(position);
     }

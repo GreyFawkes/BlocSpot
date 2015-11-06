@@ -99,8 +99,11 @@ public class LocationItemTable extends Table {
     }
 
     //public static methods for getting values from a Cursor
-    public static String getCategoryName(Cursor cursor) {
+    public static String getLocationName(Cursor cursor) {
         return getString(cursor, COLUMN_NAME);
     }
+    public static long getCategoryId(Cursor cursor) { return getLong(cursor, COLUMN_CATEGORY_ID); }
+    public static String getNotes(Cursor cursor) { return getString(cursor, COLUMN_NOTES); }
+    public static boolean getHasVisited(Cursor cursor) {return getBoolean(cursor, COLUMN_HAS_VISITED); }
 
 }

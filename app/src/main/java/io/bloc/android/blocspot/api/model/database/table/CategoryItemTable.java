@@ -10,9 +10,12 @@ import android.os.Build;
  */
 public class CategoryItemTable extends Table {
 
+    // TODO: 11/6/2015 apply the is_checked vales in the filter
+
     //static final variables
     public static final String TABLE_NAME = "category_items";
     public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_IS_CHECKED = "is_checked";
 
 
     public static class Builder implements Table.Builder {
@@ -21,8 +24,13 @@ public class CategoryItemTable extends Table {
         ContentValues values = new ContentValues();
 
         //set the category name
-        public Builder setCatagoryName(String catagoryName) {
-            values.put(COLUMN_NAME, catagoryName);
+        public Builder setCategoryName(String categoryName) {
+            values.put(COLUMN_NAME, categoryName);
+            return this;
+        }
+
+        public Builder setIsChecked(boolean isChecked) {
+            values.put(COLUMN_IS_CHECKED, isChecked);
             return this;
         }
 
@@ -70,7 +78,8 @@ public class CategoryItemTable extends Table {
         return "CREATE TABLE " + getTableName()
                 + " ("
                 + COLUMN_ID + " INTEGER PRIMARY KEY, "
-                + COLUMN_NAME + " TEXT"
+                + COLUMN_NAME + " TEXT,"
+                + COLUMN_IS_CHECKED + " INTEGER DEFAULT 0"
                 + ")";
     }
 
@@ -79,6 +88,9 @@ public class CategoryItemTable extends Table {
         return getString(cursor, COLUMN_NAME);
     }
 
+    public static boolean getIsChecked(Cursor cursor) {
+        return getBoolean(cursor, COLUMN_IS_CHECKED);
+    }
 
 
 

@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import io.bloc.android.blocspot.BlocSpotApplication;
 import io.bloc.android.blocspot.BuildConfig;
 import io.bloc.android.blocspot.api.model.CategoryItem;
+import io.bloc.android.blocspot.api.model.LocationItem;
 import io.bloc.android.blocspot.api.model.database.DatabaseOpenHelper;
 import io.bloc.android.blocspot.api.model.database.table.CategoryItemTable;
 import io.bloc.android.blocspot.api.model.database.table.LocationItemTable;
@@ -71,13 +72,15 @@ public class DataSource {
 
                 //Table Builders go here - Categories
             new CategoryItemTable.Builder()
-                    .setCatagoryName("Cat Z")
+                    .setCategoryName("Cat Z")
+                    .setIsChecked(false)
                     .insert(writeableDatabase);
             new CategoryItemTable.Builder()
-                    .setCatagoryName("Cat B")
+                    .setCategoryName("Cat B")
+                    .setIsChecked(true)
                     .insert(writeableDatabase);
             new CategoryItemTable.Builder()
-                    .setCatagoryName("Cat C")
+                    .setCategoryName("Cat C")
                     .insert(writeableDatabase);
 
                 //Table Builders - Locations
@@ -90,18 +93,17 @@ public class DataSource {
             new LocationItemTable.Builder()
                     .setLocationName("Location C")
                     .setNotes("This is Location C")
-                    .setHasVisited(true)
+                    .setHasVisited(false)
                     .setCategory(getCategoryItemByTitle("Cat C").getRowId())
                     .insert(writeableDatabase);
             new LocationItemTable.Builder()
                     .setLocationName("Location T")
                     .setNotes("This is Location T")
-                    .setHasVisited(true)
                     .insert(writeableDatabase);
 
         }
     }
-    
+
         //fetches all of the CategoryItems in the database
         //this will probably only be used in the filter dialog
     public void fetchCategoryItems(final Callback<List<CategoryItem>> callback) {
@@ -127,8 +129,8 @@ public class DataSource {
                     do {
                         categoryItems.add(categoryItemFromCursor(cursor));
                     } while (cursor.moveToNext());
-                    cursor.close();
                 }
+                cursor.close();
                 callbackThreadHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -140,10 +142,47 @@ public class DataSource {
 
     }
 
+    public void fetchLocationItems(final Callback<List<LocationItem>> callback) {
+
+            //create a new handler
+        final Handler callbackThreadHander = new Handler();
+
+            //submit the task of getting a cursor to build a list
+        submitTask(new Runnable() {
+            @Override
+            public void run() {
+                    //create a list
+                final List<LocationItem> locationItems = new ArrayList<LocationItem>();
+
+                    //get the cursor from the locationItemTable
+                Cursor cursor = LocationItemTable.fetchAllLocations(
+                        mDatabaseOpenHelper.getReadableDatabase()
+                );
+
+                    //start building the list from the items in the cursor
+                if(cursor.moveToFirst()) {
+                    do {
+                        locationItems.add(locationItemFromCursor(cursor));
+                    } while(cursor.moveToNext());
+                }
+                    //close the cursor
+                cursor.close();
+                    //post the list through a separate thread
+                callbackThreadHander.post(new Runnable() {
+                    @Override
+                    public void run() {
+                            //post it in onSuccess
+                        callback.onSuccess(locationItems);
+                    }
+                });
+            }
+        });
+    }
+
         //add a new category to the database table
     public void addCategoryItem(String categoryTitle) {
         new CategoryItemTable.Builder()
-                .setCatagoryName(categoryTitle)
+                .setCategoryName(categoryTitle)
                 .insert(mDatabaseOpenHelper.getWritableDatabase());
     }
 
@@ -173,19 +212,32 @@ public class DataSource {
 
     }
 
+        //getter methods for categoryItem from cursor
     private CategoryItem categoryItemFromCursor(Cursor cursor) {
         return new CategoryItem(
                 CategoryItemTable.getRowId(cursor),
-                CategoryItemTable.getCategoryName(cursor)
+                CategoryItemTable.getCategoryName(cursor),
+                CategoryItemTable.getIsChecked(cursor)
         );
     }
-
     private CategoryItem categoryItemFromCursorAndCloseCursor(Cursor cursor) {
-        CategoryItem item = new CategoryItem(
-                CategoryItemTable.getRowId(cursor),
-                CategoryItemTable.getCategoryName(cursor)
-        );
+        CategoryItem item = categoryItemFromCursor(cursor);
+        cursor.close();
+        return item;
+    }
 
+        //getter methods for LocationItems from cursor
+    private LocationItem locationItemFromCursor(Cursor cursor) {
+        return new LocationItem(
+                LocationItemTable.getRowId(cursor),
+                LocationItemTable.getLocationName(cursor),
+                LocationItemTable.getCategoryId(cursor),
+                LocationItemTable.getNotes(cursor),
+                LocationItemTable.getHasVisited(cursor)
+        );
+    }
+    private LocationItem locationItemFromCursorAndCloseCursor(Cursor cursor) {
+        LocationItem item = locationItemFromCursor(cursor);
         cursor.close();
         return item;
     }
