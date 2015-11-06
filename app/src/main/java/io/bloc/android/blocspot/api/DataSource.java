@@ -15,6 +15,7 @@ import io.bloc.android.blocspot.BuildConfig;
 import io.bloc.android.blocspot.api.model.CategoryItem;
 import io.bloc.android.blocspot.api.model.database.DatabaseOpenHelper;
 import io.bloc.android.blocspot.api.model.database.table.CategoryItemTable;
+import io.bloc.android.blocspot.api.model.database.table.LocationItemTable;
 
 /**
  * Created by Administrator on 11/1/2015.
@@ -28,6 +29,7 @@ public class DataSource {
 
     private DatabaseOpenHelper mDatabaseOpenHelper;
     private CategoryItemTable mCategoryItemTable;
+    private LocationItemTable mLocationItemTable;
 
     private ExecutorService mExecutorService;
 
@@ -44,6 +46,7 @@ public class DataSource {
     private void initMemberVariables() {
             //init Tables
         mCategoryItemTable = new CategoryItemTable();
+        mLocationItemTable = new LocationItemTable();
 
             //init ExecutorService
         mExecutorService = Executors.newSingleThreadExecutor();
@@ -51,7 +54,7 @@ public class DataSource {
             //init DatabaseOpenHelper with the needed tables
         mDatabaseOpenHelper = new DatabaseOpenHelper(
                 BlocSpotApplication.getSharedInstance(),
-                mCategoryItemTable);
+                mCategoryItemTable, mLocationItemTable);
     }
 
         //method that deletes the old database and
@@ -66,7 +69,7 @@ public class DataSource {
             SQLiteDatabase writeableDatabase =
                     mDatabaseOpenHelper.getWritableDatabase();
 
-                //Table Builders go here
+                //Table Builders go here - Categories
             new CategoryItemTable.Builder()
                     .setCatagoryName("Cat Z")
                     .insert(writeableDatabase);
@@ -77,10 +80,28 @@ public class DataSource {
                     .setCatagoryName("Cat C")
                     .insert(writeableDatabase);
 
+                //Table Builders - Locations
+            new LocationItemTable.Builder()
+                    .setLocationName("Location A")
+                    .setNotes("This is Location A")
+                    .setHasVisited(true)
+                    .setCategory(getCategoryItemByTitle("Cat Z").getRowId())
+                    .insert(writeableDatabase);
+            new LocationItemTable.Builder()
+                    .setLocationName("Location C")
+                    .setNotes("This is Location C")
+                    .setHasVisited(true)
+                    .setCategory(getCategoryItemByTitle("Cat C").getRowId())
+                    .insert(writeableDatabase);
+            new LocationItemTable.Builder()
+                    .setLocationName("Location T")
+                    .setNotes("This is Location T")
+                    .setHasVisited(true)
+                    .insert(writeableDatabase);
+
         }
     }
-
-
+    
         //fetches all of the CategoryItems in the database
         //this will probably only be used in the filter dialog
     public void fetchCategoryItems(final Callback<List<CategoryItem>> callback) {

@@ -6,18 +6,19 @@ package io.bloc.android.blocspot.api.model;
 public class LocationItem extends Model {
 
     private String mLocationName;
-    private String mCategoryName;
     private String mLocationNotes;
 
     private boolean mHasVisitedLocation;
 
+    private long mCategoryId;
+
         //----------Constructor-----------
-    public LocationItem(long rowId, String locationName, String categoryName,
+    public LocationItem(long rowId, String locationName, long categoryId,
                         String locationNotes, boolean hasVisitedLocation) {
 
         super(rowId);
         mLocationName = locationName;
-        mCategoryName = categoryName;
+        mCategoryId = categoryId;
         mLocationNotes = locationNotes;
         mHasVisitedLocation = hasVisitedLocation;
     }
@@ -27,8 +28,8 @@ public class LocationItem extends Model {
         return mLocationName;
     }
 
-    public String getCategoryName() {
-        return mCategoryName;
+    public long getCategoryId() {
+        return mCategoryId;
     }
 
     public String getLocationNotes() {
