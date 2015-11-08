@@ -10,7 +10,7 @@ import android.os.Build;
  */
 public class CategoryItemTable extends Table {
 
-    // TODO: 11/6/2015 apply the is_checked vales in the filter
+    // TODO: 11/6/2015 apply the is_checked values in the filter
 
     //static final variables
     public static final String TABLE_NAME = "category_items";

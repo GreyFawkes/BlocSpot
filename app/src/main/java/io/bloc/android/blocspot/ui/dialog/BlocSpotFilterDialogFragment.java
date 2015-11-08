@@ -151,7 +151,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
         return mCategoryItems.size();
     }
 
-    //------------Implemented Callbacks methods
+    //------------Implemented Delegate methods
     @Override
     public void onDialogOkPressed(String categoryTitle) {
             //add a new item to the CategoryItemTable with info from addItemDialog
@@ -232,12 +232,6 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
 
             }
         });
-
-    }
-
-        //method that is executed when a new category is added to the list
-    private void onAddNewCategory() {
-        int itemCount = mAdapter.getItemCount();
 
     }
 

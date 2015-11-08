@@ -36,7 +36,7 @@ public class LocationItem extends Model {
         return mLocationNotes;
     }
 
-    public boolean isHasVisitedLocation() {
+    public boolean hasVisitedLocation() {
         return mHasVisitedLocation;
     }
 }

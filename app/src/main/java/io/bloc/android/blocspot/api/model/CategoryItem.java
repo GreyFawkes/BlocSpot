@@ -5,8 +5,6 @@ package io.bloc.android.blocspot.api.model;
  */
 public class CategoryItem extends Model {
 
-    // TODO: 11/5/2015 add a is_checked variable to the item and database for filter implementation
-
         //----Member variables---
     private String mCategoryName;
     private boolean mIsChecked;

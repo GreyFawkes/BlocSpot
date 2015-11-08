@@ -145,7 +145,7 @@ public class DataSource {
     public void fetchLocationItems(final Callback<List<LocationItem>> callback) {
 
             //create a new handler
-        final Handler callbackThreadHander = new Handler();
+        final Handler callbackThreadHandler = new Handler();
 
             //submit the task of getting a cursor to build a list
         submitTask(new Runnable() {
@@ -168,10 +168,10 @@ public class DataSource {
                     //close the cursor
                 cursor.close();
                     //post the list through a separate thread
-                callbackThreadHander.post(new Runnable() {
+                callbackThreadHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                            //post it in onSuccess
+                        //post it in onSuccess
                         callback.onSuccess(locationItems);
                     }
                 });
