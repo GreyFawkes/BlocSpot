@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,14 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.bloc.android.blocspot.BlocSpotApplication;
 import io.bloc.android.blocspot.R;
+import io.bloc.android.blocspot.api.DataSource;
+import io.bloc.android.blocspot.api.model.CategoryItem;
+import io.bloc.android.blocspot.api.model.LocationItem;
 
 /**
  * Created by Administrator on 10/20/2015.
@@ -27,19 +35,31 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     public static final String TAG_LOCATION_OPTIONS_DIALOG_FRAGMENT = "locationOptionsDiaFrag";
 
     //private static final variables
+    private static final String ARGS_CATEGORY_ID = "itemOptionsDialog_categoryId";
+    private static final String ARGS_NOTE = "itemOptionsDialog_note";
 
     //member variables
     Button mButtonNavigateTo, mButtonEditNote, mButtonDelete;
     Spinner mSpinnerCategory;
 
-    ArrayAdapter<CharSequence> mSpinnerCategoryAdapter;
+    String mLocationNote;
+    long mCategoryId;
+
+    List<CategoryItem> mCategoryItems = new ArrayList<CategoryItem>();
+    List<String> mCategoryNames = new ArrayList<String>();
+
+    ArrayAdapter<String> mSpinnerCategoryAdapter;
 
     //newInstance method
-    public static BlocSpotLocationItemOptionsDialog newInstance() {
+    public static BlocSpotLocationItemOptionsDialog newInstance(LocationItem locationItem) {
         BlocSpotLocationItemOptionsDialog dialogFragment =
                 new BlocSpotLocationItemOptionsDialog();
 
         //put argument stuff here
+        Bundle args = new Bundle();
+        args.putLong(ARGS_CATEGORY_ID, locationItem.getCategoryId());
+        args.putString(ARGS_NOTE, locationItem.getLocationNotes());
+        dialogFragment.setArguments(args);
 
         return dialogFragment;
     }
@@ -49,6 +69,11 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mLocationNote = getArguments().getString(ARGS_NOTE);
+        mCategoryId = getArguments().getLong(ARGS_CATEGORY_ID, -1);
+
+        
 
     }
 
@@ -63,13 +88,7 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_fragment_location_item_options,
                 container, false);
 
-        //initialize all view elements
-        initUI(view);
-
-        //set up listeners
-        initListeners();
-
-
+        //initUI(view);
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -82,12 +101,7 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
         View view = getActivity().getLayoutInflater()
                 .inflate(R.layout.dialog_fragment_location_item_options, null);
 
-        //initialize all view elements
         initUI(view);
-
-        //set up listeners
-        initListeners();
-
 
         //if a dialog is created, show the following
         return new AlertDialog.Builder(getActivity())
@@ -104,8 +118,25 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
 
     //------------private methods-----------
 
+    //simplified method that takes all common implementation between a fragment and a dialog for
+    // more simplified edits
+    private void initUI(View view){
+
+        // // TODO: 11/9/2015 use a method to force the initCategoryData method to complete first
+            //semaphores or executor service
+        //initialize
+        initCategoryData(view);
+
+        //initialize all view elements
+        initUIElements(view);
+
+        //set up listeners
+        initListeners();
+
+    }
+
     //initialize all UI dialog elements
-    private void initUI(View view) {
+    private void initUIElements(View view) {
 
         //wire up the buttons
         mButtonNavigateTo = (Button) view.findViewById(R.id.btn_location_item_option_navigateTo);
@@ -114,8 +145,14 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
 
         //wire up the spinner
         mSpinnerCategory = (Spinner) view.findViewById(R.id.sp_location_item_option_category);
-        mSpinnerCategoryAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.dummy_values_cat, android.R.layout.simple_spinner_item);
+
+//        mSpinnerCategoryAdapter = ArrayAdapter.createFromResource(getActivity(),
+//                R.array.dummy_values_cat, android.R.layout.simple_spinner_item);
+        Log.i(TAG_LOCATION_OPTIONS_DIALOG_FRAGMENT, "start init SpinnerAdapter");
+
+        mSpinnerCategoryAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, mCategoryNames);
+
         mSpinnerCategoryAdapter.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item);
 
@@ -175,4 +212,37 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
             }
         });
     }
+
+    //initialize the CategoryItem data from the db
+    private void initCategoryData(View view) {
+
+            BlocSpotApplication.getSharedDataSource().fetchCategoryItems(new DataSource.Callback<List<CategoryItem>>() {
+                @Override
+                public void onSuccess(List<CategoryItem> categoryItems) {
+
+                    Log.i(TAG_LOCATION_OPTIONS_DIALOG_FRAGMENT, "cat data started");
+                    mCategoryItems = categoryItems;
+                    initArrays();
+
+
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+
+                }
+            });
+
+    }
+
+        //initialize any arrays - currently only used in the initCategoryData method above
+    private void initArrays() {
+
+        for(int i = 0; i < mCategoryItems.size(); i++) {
+            Log.i(TAG_LOCATION_OPTIONS_DIALOG_FRAGMENT, String.valueOf(i) + " " + mCategoryItems.get(i).getCategoryName());
+            mCategoryNames.add(mCategoryItems.get(i).getCategoryName());
+        }
+
+    }
+
 }

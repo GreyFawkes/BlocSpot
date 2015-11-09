@@ -50,7 +50,6 @@ public class BlocSpotLocationListFragment extends Fragment
         initLocationDataSet();
     }
 
-
         //-------------------onCreateView
     @Nullable
     @Override
@@ -63,26 +62,25 @@ public class BlocSpotLocationListFragment extends Fragment
         return view;
     }
 
-
-    //------------Interface methods: Delegate-----------
-
-
-        //performs the following when the user presses the options button
-        //on any of the location item views
+    //performs the following when the user presses the options button
+    //on any of the location item views
+    // Todo: the interface should return the LocationItem
     @Override
-    public void whenOptionsButtonPressed() { // Todo: the interface should return the LocationItem
-            //create the optionsMenu dialog
+    public void whenOptionsButtonPressed(LocationItem locationItem) {
+        //create the optionsMenu dialog
         BlocSpotLocationItemOptionsDialog optionsDialog =
-                BlocSpotLocationItemOptionsDialog.newInstance();
+                BlocSpotLocationItemOptionsDialog.newInstance(locationItem);
 
-            //any additional setup for the fragment goes here
+        //any additional setup for the fragment goes here
 
-            //post the dialog as an alertDialog
+        //post the dialog as an alertDialog
         optionsDialog.show(getFragmentManager(),
                 BlocSpotLocationItemOptionsDialog.TAG_LOCATION_OPTIONS_DIALOG_FRAGMENT);
 
 
     }
+
+    //------------Interface methods: Delegate-----------
 
     @Override
     public void whenVisitedCheckboxToggled(boolean isChecked) { // // TODO: 11/8/2015 return the locationItem for database changes 

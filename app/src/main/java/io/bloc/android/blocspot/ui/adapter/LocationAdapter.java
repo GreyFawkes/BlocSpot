@@ -35,7 +35,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
         int getItemCount(LocationAdapter locationAdapter);
     }
     public interface Delegate {
-        void whenOptionsButtonPressed();
+        void whenOptionsButtonPressed(LocationItem locationItem);
         void whenVisitedCheckboxToggled(boolean isChecked);
     }
 
@@ -114,7 +114,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
                 public void onClick(View v) {
 
                         //perform the action described in BlocSpotLocationListFragment
-                    getDelegate().whenOptionsButtonPressed();
+                    getDelegate().whenOptionsButtonPressed(mLocationItem);
 
                 }
             });
