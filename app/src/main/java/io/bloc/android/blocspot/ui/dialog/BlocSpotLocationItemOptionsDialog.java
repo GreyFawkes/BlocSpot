@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -41,9 +42,12 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     //member variables
     Button mButtonNavigateTo, mButtonEditNote, mButtonDelete;
     Spinner mSpinnerCategory;
+    EditText mNoteEditText;
 
     String mLocationNote;
     long mCategoryId;
+
+    boolean mEditMode = false;
 
     List<CategoryItem> mCategoryItems = new ArrayList<CategoryItem>();
     List<String> mCategoryNames = new ArrayList<String>();
@@ -72,8 +76,6 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
 
         mLocationNote = getArguments().getString(ARGS_NOTE);
         mCategoryId = getArguments().getLong(ARGS_CATEGORY_ID, -1);
-
-        
 
     }
 
@@ -125,7 +127,7 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
         // // TODO: 11/9/2015 use a method to force the initCategoryData method to complete first
             //semaphores or executor service
         //initialize
-        initCategoryData(view);
+        initCategoryData();
 
         //initialize all view elements
         initUIElements(view);
@@ -142,6 +144,9 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
         mButtonNavigateTo = (Button) view.findViewById(R.id.btn_location_item_option_navigateTo);
         mButtonDelete = (Button) view.findViewById(R.id.btn_location_item_option_delete_item);
         mButtonEditNote = (Button) view.findViewById(R.id.btn_location_item_option_edit_note);
+
+        //wire up EditText
+        mNoteEditText = (EditText) view.findViewById(R.id.et_location_item_option_note);
 
         //wire up the spinner
         mSpinnerCategory = (Spinner) view.findViewById(R.id.sp_location_item_option_category);
@@ -164,6 +169,7 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     //initialize repeat Listeners
     private void initListeners() {
 
+            //action when the user clicks the NavigateTo button
         mButtonNavigateTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,6 +177,7 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
             }
         });
 
+            //action when the user clicks the Delete button
         mButtonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,10 +185,47 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
             }
         });
 
+            //action when the user clicks on the EditNote button
         mButtonEditNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Edit this location's note", Toast.LENGTH_SHORT).show();
+
+                    //if edit mode is true -
+                        //save the current string in the editText box
+                        //close the editText box (make it gone)
+                        //change the text on the button to 'edit location note'
+                        //change mEditMode to false
+                if(mEditMode) {
+
+                        //get the current string
+                    mLocationNote = mNoteEditText.getText().toString();
+                        //make the view gone
+                    mNoteEditText.setVisibility(View.GONE);
+                        //change the button text to Edit location note
+                    mButtonEditNote.setText(R.string.dialog_location_item_edit_note);
+                        //mEditMode is false
+                    mEditMode = false;
+
+                    /*
+                    if edit mode is false -
+                        put the current note string into the editText box
+                        open the editText box (make it visible)
+                        change the text on the button to 'save location note'
+                        change mEditMode to true
+                     */
+                } else {
+
+                    if(mLocationNote == null) mLocationNote = "";
+                        //set the text in the EditText to the current note string
+                    mNoteEditText.setText(mLocationNote);
+                        //set the textView to visible
+                    mNoteEditText.setVisibility(View.VISIBLE);
+                        //change the text on the button to 'Save location Note'
+                    mButtonEditNote.setText(R.string.dialog_location_item_save_note);
+                        //set mEditMode to true
+
+                }
             }
         });
 
@@ -214,15 +258,26 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     }
 
     //initialize the CategoryItem data from the db
-    private void initCategoryData(View view) {
+    private void initCategoryData() {
+
+            //because getting info from the db will take a bit of time
+            // adding one item to the list will make sure the spinner inflates
+            // properly. If this step is not done the spinner will 'hide' from
+            // the user because it is embarrassed it does not have items in its list
+        String defaultCategory = getResources().getString(R.string.dialog_location_item_defaultCategory);
+        mCategoryNames.add(defaultCategory);
 
             BlocSpotApplication.getSharedDataSource().fetchCategoryItems(new DataSource.Callback<List<CategoryItem>>() {
                 @Override
                 public void onSuccess(List<CategoryItem> categoryItems) {
 
-                    Log.i(TAG_LOCATION_OPTIONS_DIALOG_FRAGMENT, "cat data started");
                     mCategoryItems = categoryItems;
                     initArrays();
+
+                        //removing the ugly first item
+                    mCategoryNames.remove(0);
+                        //notify data set
+                    mSpinnerCategoryAdapter.notifyDataSetChanged();
 
 
                 }

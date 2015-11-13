@@ -7,11 +7,11 @@
     <string name="menu_item_close_search_locations">Close</string>
     <string name="dialog_add_category_hint">Title</string>
     <string name="dialog_filter_title">Category Name</string>
+    <string name="dialog_location_item_defaultCategory">Select Category...</string>
     <string name="dialog_location_item_navigateTo">Navigate To This Location</string>
     <string name="dialog_location_item_delete_item">Delete Location</string>
     <string name="dialog_location_item_category">Location Category</string>
     <string name="dialog_location_item_edit_note">Edit Location Note</string>
-    
-
+    <string name="dialog_location_item_save_note">Save Location Note</string>
 
 </resources>
