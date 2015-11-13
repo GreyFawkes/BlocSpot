@@ -74,8 +74,10 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+            //get the necessary values from the bundle
         mLocationNote = getArguments().getString(ARGS_NOTE);
-        mCategoryId = getArguments().getLong(ARGS_CATEGORY_ID, -1);
+
+
 
     }
 
@@ -233,17 +235,25 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                String catName;
+                String catName = null;
 
                 try {
                     catName = mSpinnerCategoryAdapter.getItem(position).toString();
                 } catch (NullPointerException e) {
-                    catName = "null";
+                    //do nothing
                 }
 
-                Toast.makeText(getActivity(),
-                        "This spinner is on " + catName,
-                        Toast.LENGTH_SHORT).show();
+                if(catName != null) {
+                    for(int i = 0; i < mCategoryItems.size(); i++) {
+                        if(mCategoryItems.get(i).getCategoryName().equals(catName)) {
+                            //assign this item's category id to the matched category
+                            mCategoryId = mCategoryItems.get(i).getRowId();
+                            //break out of the for loop
+                            break;
+                        }
+                    }
+                }
+
             }
 
             @Override
@@ -274,11 +284,28 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
                     mCategoryItems = categoryItems;
                     initArrays();
 
-                        //removing the ugly first item
-                    mCategoryNames.remove(0);
-                        //notify data set
-                    mSpinnerCategoryAdapter.notifyDataSetChanged();
+                    //assign the category Id for the locationItem
+                    mCategoryId = getArguments().getLong(ARGS_CATEGORY_ID, -1l);
 
+                    //if the categoryId is not -1
+                    if(mCategoryId != -1l) {
+
+                        //removing the ugly first item
+                        mCategoryNames.remove(0);
+                        //notify data set
+                        mSpinnerCategoryAdapter.notifyDataSetChanged();
+
+                        //find the currently selected category for the LocationItem
+                        // and select it in the spinner
+                        for (int i = 0; i < mCategoryItems.size(); i++) {
+                            if (mCategoryItems.get(i).getRowId() == mCategoryId)
+                                mSpinnerCategory.setSelection(i);
+                        }
+
+                        //otherwise just notify that the dataset has changed
+                    } else {
+                        mSpinnerCategoryAdapter.notifyDataSetChanged();
+                    }
 
                 }
 
