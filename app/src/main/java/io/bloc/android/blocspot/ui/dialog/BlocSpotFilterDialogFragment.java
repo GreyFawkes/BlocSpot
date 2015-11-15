@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
     public static final String FILTER_DIALOG_ARGS = "filterDialogArgs";
 
     //private static final variables
+    private static final String TAG_FILTER_DIALOG_FRAGMENT = "filterDialogFragment";
 
         //member variables
     ImageButton mImageButton;
@@ -84,14 +86,14 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
                              Bundle savedInstanceState) {
 
         //inflate the view
-        View view = inflater.inflate(R.layout.dialog_fragment_blocspot_filter,
-                container, false);
-
-        //initialize all view elements
-        initUI(view);
-
-        //set up listeners
-        initListeners();
+//        View view = inflater.inflate(R.layout.dialog_fragment_blocspot_filter,
+//                container, false);
+//
+//        //initialize all view elements
+//        initUI(view);
+//
+//        //set up listeners
+//        initListeners();
 
 
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -128,6 +130,16 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
 
     @Override
     public void whenSetCategoryToggled(CategoryItem categoryItem, boolean isChecked) {
+
+        if(categoryItem == null) {
+            Log.i(TAG_FILTER_DIALOG_FRAGMENT, "bad thoughts");
+        } else {
+            Log.i(TAG_FILTER_DIALOG_FRAGMENT, "good thoughts");
+            BlocSpotApplication.getSharedDataSource().updateIsCheckedCategoryItem(
+                    categoryItem.getRowId(), isChecked
+            );
+            updateCategoryDataSet();
+        }
 
         String message;
 
@@ -223,7 +235,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
                 }
 
                 mCategoryItems = categoryItems;
-                //mAdapter.notifyDataSetChanged(); I don;t seem to need this???
+                mAdapter.notifyDataSetChanged();
 
             }
 

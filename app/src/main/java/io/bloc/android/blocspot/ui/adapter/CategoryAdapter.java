@@ -115,6 +115,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
         private void update(CategoryItem categoryItem) {
             mTextView.setText(categoryItem.getCategoryName());
+            mCheckBox.setChecked(categoryItem.getIsChecked());
             mCategoryItem = categoryItem;
         }
     }
