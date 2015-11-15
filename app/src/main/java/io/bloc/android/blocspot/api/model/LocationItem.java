@@ -23,6 +23,7 @@ public class LocationItem extends Model {
         mHasVisitedLocation = hasVisitedLocation;
     }
 
+
         //----------Getters--------------
     public String getLocationName() {
         return mLocationName;

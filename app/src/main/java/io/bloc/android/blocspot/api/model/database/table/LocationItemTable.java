@@ -92,7 +92,7 @@ public class LocationItemTable extends Table {
                 + " ("
                 + COLUMN_ID + " INTEGER PRIMARY KEY, "
                 + COLUMN_NAME + " TEXT,"
-                + COLUMN_CATEGORY_ID + " INTEGER,"
+                + COLUMN_CATEGORY_ID + " INTEGER DEFAULT -1,"
                 + COLUMN_NOTES + " TEXT,"
                 + COLUMN_HAS_VISITED + " INTEGER DEFAULT 0"
                 + ")";

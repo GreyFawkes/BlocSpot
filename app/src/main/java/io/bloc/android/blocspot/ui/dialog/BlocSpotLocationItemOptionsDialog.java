@@ -6,7 +6,6 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,16 +35,19 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     public static final String TAG_LOCATION_OPTIONS_DIALOG_FRAGMENT = "locationOptionsDiaFrag";
 
     //private static final variables
-    private static final String ARGS_CATEGORY_ID = "itemOptionsDialog_categoryId";
+
+    private static final String ARGS_LOCATION_ID = "itemOptionsDialog_locationId";
+    private static final String ARGS_LOCATION_NAME = "itemOptionsDialog_locationName";
     private static final String ARGS_NOTE = "itemOptionsDialog_note";
+    private static final String ARGS_CATEGORY_ID = "itemOptionsDialog_categoryId";
 
     //member variables
     Button mButtonNavigateTo, mButtonEditNote, mButtonDelete;
     Spinner mSpinnerCategory;
     EditText mNoteEditText;
 
-    String mLocationNote;
-    long mCategoryId;
+    String mLocationNote, mLocationName;
+    long mCategoryId, mLocationId;
 
     boolean mEditMode = false;
 
@@ -61,6 +63,8 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
 
         //put argument stuff here
         Bundle args = new Bundle();
+        args.putLong(ARGS_LOCATION_ID, locationItem.getRowId());
+        args.putString(ARGS_LOCATION_NAME, locationItem.getLocationName());
         args.putLong(ARGS_CATEGORY_ID, locationItem.getCategoryId());
         args.putString(ARGS_NOTE, locationItem.getLocationNotes());
         dialogFragment.setArguments(args);
@@ -74,9 +78,15 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-            //get the necessary values from the bundle
-        mLocationNote = getArguments().getString(ARGS_NOTE);
+        if(getArguments() != null) {
+            //get the necessary values from the bundle - except categoryId,
+            // which is retrieved in the initCategoryData method
+            mLocationNote = getArguments().getString(ARGS_NOTE);
+            mLocationName = getArguments().getString(ARGS_LOCATION_NAME);
+            mLocationId = getArguments().getLong(ARGS_LOCATION_ID);
+        }
 
+        // // TODO: 11/14/2015 add the title of the location name somewhere
 
 
     }
@@ -155,7 +165,6 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
 
 //        mSpinnerCategoryAdapter = ArrayAdapter.createFromResource(getActivity(),
 //                R.array.dummy_values_cat, android.R.layout.simple_spinner_item);
-        Log.i(TAG_LOCATION_OPTIONS_DIALOG_FRAGMENT, "start init SpinnerAdapter");
 
         mSpinnerCategoryAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, mCategoryNames);
@@ -200,14 +209,14 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
                         //change mEditMode to false
                 if(mEditMode) {
 
-                        //get the current string
-                    mLocationNote = mNoteEditText.getText().toString();
-                        //make the view gone
-                    mNoteEditText.setVisibility(View.GONE);
-                        //change the button text to Edit location note
-                    mButtonEditNote.setText(R.string.dialog_location_item_edit_note);
-                        //mEditMode is false
+                    //mEditMode is false
                     mEditMode = false;
+                    //get the current Note string and set it as the current note
+                    mLocationNote = mNoteEditText.getText().toString();
+                    //make the view gone
+                    mNoteEditText.setVisibility(View.GONE);
+                    //change the button text to Edit location note
+                    mButtonEditNote.setText(R.string.dialog_location_item_edit_note);
 
                     /*
                     if edit mode is false -
@@ -219,6 +228,8 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
                 } else {
 
                     if(mLocationNote == null) mLocationNote = "";
+
+                    mEditMode = true;
                         //set the text in the EditText to the current note string
                     mNoteEditText.setText(mLocationNote);
                         //set the textView to visible
@@ -321,7 +332,6 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     private void initArrays() {
 
         for(int i = 0; i < mCategoryItems.size(); i++) {
-            Log.i(TAG_LOCATION_OPTIONS_DIALOG_FRAGMENT, String.valueOf(i) + " " + mCategoryItems.get(i).getCategoryName());
             mCategoryNames.add(mCategoryItems.get(i).getCategoryName());
         }
 
