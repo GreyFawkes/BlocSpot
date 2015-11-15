@@ -35,7 +35,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
     public interface Delegate {
-        void whenSetCategoryToggled(boolean isChecked);
+        void whenSetCategoryToggled(CategoryItem categoryItem, boolean isChecked);
     }
 
     //---------interface variables-----------
@@ -78,6 +78,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
      */
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        private CategoryItem mCategoryItem;
+
         public TextView mTextView;
         public CheckBox mCheckBox;
 
@@ -106,13 +108,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    getDelegate().whenSetCategoryToggled(isChecked);
+                    getDelegate().whenSetCategoryToggled(mCategoryItem, isChecked);
                 }
             });
         }
 
         private void update(CategoryItem categoryItem) {
             mTextView.setText(categoryItem.getCategoryName());
+            mCategoryItem = categoryItem;
         }
     }
 

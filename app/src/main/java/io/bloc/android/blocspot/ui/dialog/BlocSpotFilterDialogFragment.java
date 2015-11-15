@@ -69,7 +69,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
 
         //when creating the fragment fetch all of the category items
         // that will be placed into the list
-        initCategoryDataSet();
+        updateCategoryDataSet();
 
         //set callbacks from the addCategoryDialog
         mAddCategoryDialog.setCallbacks(this);
@@ -127,7 +127,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
     //------------Implemented delegate methods--------
 
     @Override
-    public void whenSetCategoryToggled(boolean isChecked) {
+    public void whenSetCategoryToggled(CategoryItem categoryItem, boolean isChecked) {
 
         String message;
 
@@ -213,7 +213,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
     }
 
     //setup the dataset for the categories
-    private void initCategoryDataSet() {
+    private void updateCategoryDataSet() {
 
         BlocSpotApplication.getSharedDataSource().fetchCategoryItems(new DataSource.Callback<List<CategoryItem>>() {
             @Override

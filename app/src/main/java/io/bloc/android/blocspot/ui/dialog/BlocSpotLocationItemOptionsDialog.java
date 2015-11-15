@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     private static final String ARGS_LOCATION_NAME = "itemOptionsDialog_locationName";
     private static final String ARGS_NOTE = "itemOptionsDialog_note";
     private static final String ARGS_CATEGORY_ID = "itemOptionsDialog_categoryId";
+    private static final String ARGS_HAS_VISITED_LOCATION = "itemOptionsDialog_hasVisitedLocation";
 
     //member variables
     Button mButtonNavigateTo, mButtonEditNote, mButtonDelete;
@@ -48,6 +50,7 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
 
     String mLocationNote, mLocationName;
     long mCategoryId, mLocationId;
+    boolean mHasVisitedLocation;
 
     boolean mEditMode = false;
 
@@ -55,6 +58,23 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     List<String> mCategoryNames = new ArrayList<String>();
 
     ArrayAdapter<String> mSpinnerCategoryAdapter;
+
+    public interface Callback {
+        void onDialogOkPressed(long locationId, String locationName, String locationNote,
+                               long categoryId, boolean hasVisitedLocation);
+    }
+
+    private WeakReference<Callback> mCallback;
+
+    public void setCallback(Callback callback){
+        mCallback = new WeakReference<Callback>(callback);
+    }
+
+    public Callback getCallback() {
+        if(mCallback == null) return null;
+        return mCallback.get();
+    }
+
 
     //newInstance method
     public static BlocSpotLocationItemOptionsDialog newInstance(LocationItem locationItem) {
@@ -67,6 +87,8 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
         args.putString(ARGS_LOCATION_NAME, locationItem.getLocationName());
         args.putLong(ARGS_CATEGORY_ID, locationItem.getCategoryId());
         args.putString(ARGS_NOTE, locationItem.getLocationNotes());
+        args.putBoolean(ARGS_HAS_VISITED_LOCATION, locationItem.hasVisitedLocation());
+
         dialogFragment.setArguments(args);
 
         return dialogFragment;
@@ -84,6 +106,7 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
             mLocationNote = getArguments().getString(ARGS_NOTE);
             mLocationName = getArguments().getString(ARGS_LOCATION_NAME);
             mLocationId = getArguments().getLong(ARGS_LOCATION_ID);
+            mHasVisitedLocation = getArguments().getBoolean(ARGS_HAS_VISITED_LOCATION);
         }
 
         // // TODO: 11/14/2015 add the title of the location name somewhere
@@ -125,6 +148,10 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(getActivity(), "This options dialog works", Toast.LENGTH_SHORT).show();
+                            //callback to update the current info
+                        getCallback().onDialogOkPressed(
+                                mLocationId,mLocationName,mLocationNote,
+                                mCategoryId,mHasVisitedLocation);
                     }
                 }).create();
 
@@ -136,8 +163,6 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     // more simplified edits
     private void initUI(View view){
 
-        // // TODO: 11/9/2015 use a method to force the initCategoryData method to complete first
-            //semaphores or executor service
         //initialize
         initCategoryData();
 

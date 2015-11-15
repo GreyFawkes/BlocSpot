@@ -36,7 +36,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     }
     public interface Delegate {
         void whenOptionsButtonPressed(LocationItem locationItem);
-        void whenVisitedCheckboxToggled(boolean isChecked);
+        void whenVisitedCheckboxToggled(LocationItem locationItem, boolean isChecked);
     }
 
     //interface variables here
@@ -122,9 +122,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
             mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                         //perform the action described in BlocSpotLocationListFragment
-                    getDelegate().whenVisitedCheckboxToggled(isChecked);
+                    getDelegate().whenVisitedCheckboxToggled(mLocationItem, isChecked);
                 }
             });
         }

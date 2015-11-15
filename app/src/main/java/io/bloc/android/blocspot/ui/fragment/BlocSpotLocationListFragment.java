@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,8 @@ import io.bloc.android.blocspot.ui.dialog.BlocSpotLocationItemOptionsDialog;
 public class BlocSpotLocationListFragment extends Fragment
     implements
         LocationAdapter.Delegate,
-        LocationAdapter.DataSource {
+        LocationAdapter.DataSource,
+        BlocSpotLocationItemOptionsDialog.Callback{
 
     //private static final variables
 
@@ -47,7 +49,7 @@ public class BlocSpotLocationListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        initLocationDataSet();
+        updateLocationDataSet();
     }
 
         //-------------------onCreateView
@@ -70,6 +72,8 @@ public class BlocSpotLocationListFragment extends Fragment
         //create the optionsMenu dialog
         BlocSpotLocationItemOptionsDialog optionsDialog =
                 BlocSpotLocationItemOptionsDialog.newInstance(locationItem);
+        //set the callback to this fragments
+        optionsDialog.setCallback(this);
 
         //any additional setup for the fragment goes here
 
@@ -83,7 +87,17 @@ public class BlocSpotLocationListFragment extends Fragment
     //------------Interface methods: Delegate-----------
 
     @Override
-    public void whenVisitedCheckboxToggled(boolean isChecked) { // // TODO: 11/8/2015 return the locationItem for database changes 
+    public void whenVisitedCheckboxToggled(LocationItem locationItem, boolean isChecked) { // // TODO: 11/8/2015 return the locationItem for database changes
+
+        if(locationItem == null) {
+            Log.i(TAG_LOCATION_LIST_FRAGMENT, "somethin's dum!!!");
+        } else {
+            Log.i(TAG_LOCATION_LIST_FRAGMENT, "everything is all good");
+            BlocSpotApplication.getSharedDataSource().updateIsCheckedLocationItem(
+                    locationItem.getRowId(), isChecked
+            );
+            updateLocationDataSet();
+        }
 
         String message;
 
@@ -112,6 +126,19 @@ public class BlocSpotLocationListFragment extends Fragment
         return mLocationItems.size();
     }
 
+    //------------Interface methods: Callback - optionsDialog
+
+    @Override
+    public void onDialogOkPressed(long locationId, String locationName, String locationNote, long categoryId, boolean hasVisitedLocation) {
+
+
+        BlocSpotApplication.getSharedDataSource().updateLocationItem(
+                locationId, locationName, categoryId, locationNote, hasVisitedLocation
+        );
+        updateLocationDataSet();
+        Log.i(TAG_LOCATION_LIST_FRAGMENT, locationId + " " + locationName + " " + locationNote + " " + categoryId + " " + hasVisitedLocation);
+    }
+
     //------------private methods-----------
 
     //initialize all UI dialog elements
@@ -132,15 +159,17 @@ public class BlocSpotLocationListFragment extends Fragment
         mAdapter.setDelegate(this);
         mAdapter.setDataSource(this);
 
+
+
     }
 
-    //initialize repeat Listeners
+    //initialize Listeners
     private void initListeners() {
 
     }
 
     //initialize the Location Data from the Database
-    private void initLocationDataSet() {
+    private void updateLocationDataSet() {
 
         BlocSpotApplication.getSharedDataSource().fetchLocationItems(new DataSource.Callback<List<LocationItem>>() {
             @Override
@@ -162,4 +191,6 @@ public class BlocSpotLocationListFragment extends Fragment
         });
 
     }
+
+
 }

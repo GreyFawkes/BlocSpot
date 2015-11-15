@@ -1,5 +1,6 @@
 package io.bloc.android.blocspot.api;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
@@ -184,6 +185,48 @@ public class DataSource {
         new CategoryItemTable.Builder()
                 .setCategoryName(categoryTitle)
                 .insert(mDatabaseOpenHelper.getWritableDatabase());
+    }
+
+        //update a locationItem in the Table
+    public void updateLocationItem(long id, String locationName, long categoryId,
+                                   String locationNote, boolean hasVisitedLocation){
+
+            //set the id of the entry to update
+        String stringFilter = "id=" + id;
+
+            //content values for the values of the item to change
+        ContentValues args = new ContentValues();
+        args.put(LocationItemTable.COLUMN_NAME, locationName);
+        args.put(LocationItemTable.COLUMN_CATEGORY_ID, categoryId);
+        args.put(LocationItemTable.COLUMN_NOTES, locationNote);
+        args.put(LocationItemTable.COLUMN_HAS_VISITED, hasVisitedLocation);
+
+            //update the entry
+        mDatabaseOpenHelper.getWritableDatabase()
+                .update(LocationItemTable.TABLE_NAME, args, stringFilter, null);
+
+    }
+
+        //updated the checked state in the database for the given locationId
+    public void updateIsCheckedLocationItem(long locationId, boolean isChecked) {
+        String stringFilter = "id=" + locationId;
+        ContentValues args = new ContentValues();
+        args.put(LocationItemTable.COLUMN_HAS_VISITED, isChecked);
+
+        mDatabaseOpenHelper.getWritableDatabase().update(
+                LocationItemTable.TABLE_NAME, args, stringFilter, null
+        );
+    }
+
+        //update the checked state in the database for the given categoryId
+    public void updateIsCheckedCategoryItem(long categoryId, boolean isChecked) {
+        String stringFilter = "id=" + categoryId;
+        ContentValues args = new ContentValues();
+        args.put(CategoryItemTable.COLUMN_IS_CHECKED, isChecked);
+
+        mDatabaseOpenHelper.getWritableDatabase().update(
+                CategoryItemTable.TABLE_NAME, args, stringFilter, null
+        );
     }
 
         //returns a CategoryItem from the Table
