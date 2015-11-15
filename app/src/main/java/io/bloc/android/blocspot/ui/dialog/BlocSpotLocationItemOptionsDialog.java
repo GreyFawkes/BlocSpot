@@ -147,11 +147,15 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getActivity(), "This options dialog works", Toast.LENGTH_SHORT).show();
-                            //callback to update the current info
                         getCallback().onDialogOkPressed(
                                 mLocationId,mLocationName,mLocationNote,
                                 mCategoryId,mHasVisitedLocation);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //cancel the order, exit the dialog without doing anything
                     }
                 }).create();
 
