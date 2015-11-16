@@ -24,6 +24,10 @@ import io.bloc.android.blocspot.api.model.database.table.LocationItemTable;
  */
 public class DataSource {
 
+    //// TODO: 11/16/2015 add filter implementation to the searches
+
+    private static final String TAG = "DataSourceTAG";
+
     public interface Callback<Result> {
         void onSuccess(Result result);
         void onError(String errorMessage);
@@ -143,6 +147,7 @@ public class DataSource {
 
     }
 
+        //fetch all location items and return the cursor to the callback
     public void fetchLocationItems(final Callback<List<LocationItem>> callback) {
 
             //create a new handler
@@ -178,6 +183,45 @@ public class DataSource {
                 });
             }
         });
+    }
+
+
+        //find all locations with a given substring, return the cursor to the callback
+    public void fetchLocationItemsBySubstring(final String substring, final Callback<List<LocationItem>> callback) {
+
+        final Handler callbackThreadHandler = new Handler();
+
+        submitTask(new Runnable() {
+            @Override
+            public void run() {
+                //create a list
+                final List<LocationItem> locationItems = new ArrayList<LocationItem>();
+
+                //get the cursor from the locationItemTable
+                Cursor cursor = LocationItemTable.fetchLocationsBySubstring(
+                        mDatabaseOpenHelper.getReadableDatabase(), substring
+                );
+
+                //start building the list from the items in the cursor
+                if (cursor.moveToFirst()) {
+                    do {
+                        locationItems.add(locationItemFromCursor(cursor));
+                    } while (cursor.moveToNext());
+                }
+                //close the cursor
+                cursor.close();
+                //post the list through a separate thread
+                callbackThreadHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //post it in onSuccess
+                        callback.onSuccess(locationItems);
+                    }
+                });
+            }
+        });
+
+
     }
 
         //add a new category to the database table

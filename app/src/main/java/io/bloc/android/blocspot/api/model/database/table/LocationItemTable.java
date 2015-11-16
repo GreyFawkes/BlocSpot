@@ -10,6 +10,8 @@ import android.os.Build;
  */
 public class LocationItemTable extends Table {
 
+    private static final String TAG = "LocationItemTableTAG";
+
     //static final variables
     public static final String TABLE_NAME = "location_items";
 
@@ -74,8 +76,33 @@ public class LocationItemTable extends Table {
         } else { // otherwise use a raw query
 
             return readOnlyDatabase.rawQuery(
-                    "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_NAME + " ASC", null);
+                    "SELECT * FROM " + TABLE_NAME
+                            + " ORDER BY " + COLUMN_NAME + " ASC"
+                    , null);
         }
+
+    }
+
+    // // TODO: 11/16/2015 why does the following have trouble with order by?
+
+    public static Cursor fetchLocationsBySubstring(SQLiteDatabase readOnlyDatabase, String substring) {
+
+        String formattedSubstring = "%" + substring + "%";
+
+        String[] args = new String[]{formattedSubstring};
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            return readOnlyDatabase.query(true, TABLE_NAME,null,COLUMN_NAME + " LIKE ?",
+                    args, null,null,null,null );
+        } else {
+            return readOnlyDatabase.rawQuery(
+                    "SELECT * FROM " + TABLE_NAME
+                            + " WHERE " + COLUMN_NAME + " LIKE ?"
+                            //+ " ORDER BY " + COLUMN_NAME + " ASC" //method can't seem to handle this line??
+                    , args);
+        }
+
+
 
     }
 

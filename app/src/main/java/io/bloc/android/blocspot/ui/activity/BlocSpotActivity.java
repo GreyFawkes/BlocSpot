@@ -13,6 +13,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
+import java.lang.ref.WeakReference;
+
 import io.bloc.android.blocspot.R;
 import io.bloc.android.blocspot.ui.dialog.BlocSpotFilterDialogFragment;
 import io.bloc.android.blocspot.ui.dialog.BlocSpotLocationAlertDialog;
@@ -41,6 +43,27 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
     boolean mIsInMapMode;
     boolean mIsInSearchMode;
 
+
+    //----------Search interface---------
+
+        //the following callback methods are for communicating with the
+        // search fragment, just sending a given string to the fragment
+        // for database processing
+    public interface SearchCallback {
+        void searchLocationsWithQuery(String currentString);
+    }
+
+    WeakReference<SearchCallback> mSearchCallback;
+
+    public void setSearchCallback(SearchCallback searchCallback) {
+        mSearchCallback = new WeakReference<SearchCallback>(searchCallback);
+    }
+
+    public SearchCallback getSearchCallback() {
+        if(mSearchCallback == null) return null;
+        return mSearchCallback.get();
+    }
+
     //--------------onCreate-------------------------
 
     @Override
@@ -55,8 +78,7 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
         mIsInSearchMode = false;
 
             //wire up the interfaces with the adapters if needed here
-
-
+        //->
 
             //Set up the toolbar
         mToolbar = (Toolbar) findViewById(R.id.tb_blocspot_activity);
@@ -71,6 +93,26 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
             @Override
             public boolean onClose() {
                 toggleSearchMenu();
+                return false;
+            }
+        });
+
+            //text listener for the searchView widget in the toolbar
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                    //send the given string 'query' to a fragment that can handle it
+                    //only if a fragment exists that has the callback
+                if(getSearchCallback() != null) {
+                    getSearchCallback().searchLocationsWithQuery(query);
+                } else {
+                    //Log.i(TAG, "no SearchCallback set");
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
                 return false;
             }
         });
@@ -161,7 +203,7 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
     }
 
-    //disables/enables items in the toolbar base on whether the
+    //disables/enables items in the toolbar based on whether the
     //user is searching for an item or not
     //replaces the current fragment with a search fragment
     private void toggleSearchMenu() {
@@ -200,7 +242,7 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
             //replace the current fragment with a search fragment
             //if the search fragment does not currently exist, create one
             Fragment searchFragment = getFragmentManager()
-                    .findFragmentByTag(BlocSpotSearchListFragment.TAG_SEARCH_LIST_FRAGMENT);
+                    .findFragmentByTag(BlocSpotSearchListFragment.TAG_SEARCH_LIST_FRAGMENT);;
 
             //detach the current fragment in the fragment space
             getFragmentManager().beginTransaction()

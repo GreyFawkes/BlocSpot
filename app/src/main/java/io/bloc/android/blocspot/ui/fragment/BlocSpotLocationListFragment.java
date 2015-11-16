@@ -36,8 +36,6 @@ public class BlocSpotLocationListFragment extends Fragment
     public static final String TAG_LOCATION_LIST_FRAGMENT = "LocationListFragment";
     //private member variables
 
-    // // TODO: 11/8/2015 maybe use a recycler to fix the problem with the views not refreshing???
-
     RecyclerView mRecyclerView;
     LocationAdapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
@@ -66,7 +64,6 @@ public class BlocSpotLocationListFragment extends Fragment
 
     //performs the following when the user presses the options button
     //on any of the location item views
-    // Todo: the interface should return the LocationItem
     @Override
     public void whenOptionsButtonPressed(LocationItem locationItem) {
         //create the optionsMenu dialog
@@ -87,7 +84,7 @@ public class BlocSpotLocationListFragment extends Fragment
     //------------Interface methods: Delegate-----------
 
     @Override
-    public void whenVisitedCheckboxToggled(LocationItem locationItem, boolean isChecked) { // // TODO: 11/8/2015 return the locationItem for database changes
+    public void whenVisitedCheckboxToggled(LocationItem locationItem, boolean isChecked) { //
 
         if(locationItem == null) {
             Log.i(TAG_LOCATION_LIST_FRAGMENT, "somethin's dum!!!");
@@ -115,8 +112,8 @@ public class BlocSpotLocationListFragment extends Fragment
 
     @Override
     public LocationItem getLocationItem(LocationAdapter locationAdapter, int position) {
-        if(mLocationItems.size() == 0) {
-            return new LocationItem(0,"N/A", 0, "N/A", false);
+        if(mLocationItems.isEmpty()) {
+            return new LocationItem(-1,"N/A", -1, "N/A", false);
         }
         return mLocationItems.get(position);
     }

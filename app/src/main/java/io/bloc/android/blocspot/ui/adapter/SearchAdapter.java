@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.lang.ref.WeakReference;
 
 import io.bloc.android.blocspot.R;
+import io.bloc.android.blocspot.api.model.LocationItem;
 
 /**
  * Created by Administrator on 10/18/2015.
@@ -28,23 +29,38 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
 
     //interface for the adapter
-    public interface Callbacks {
-        void whenVisitedCheckboxToggled(boolean isChecked);
+    public interface Delegate {
+        void whenVisitedCheckboxToggled(LocationItem locationItem, boolean isChecked);
+    }
+
+    public interface DataSource {
+        LocationItem getSearchItem(SearchAdapter searchAdapter, int position);
+        int getItemCount(SearchAdapter searchAdapter);
     }
 
     //--------interface variables--------
-    private WeakReference<Callbacks> callbacks;
+    private WeakReference<Delegate> delegate;
+    private WeakReference<DataSource> dataSource;
 
-    //--------callbacks methods----------
-    public Callbacks getCallbacks() {
-        if(callbacks == null) return null;
-        return callbacks.get();
+    //--------delegate methods----------
+    public Delegate getDelegate() {
+        if(delegate == null) return null;
+        return delegate.get();
     }
 
-    public void setCallbacks(Callbacks callbacks) {
-        this.callbacks = new WeakReference<Callbacks>(callbacks);
+    public void setDelegate(Delegate delegate) {
+        this.delegate = new WeakReference<Delegate>(delegate);
     }
 
+    //-------dataSource methods--------------
+    public DataSource getDataSource() {
+        if(dataSource == null) return null;
+        return dataSource.get();
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = new WeakReference<DataSource>(dataSource);
+    }
 
     //dummy data
     private String storedData[];
@@ -52,8 +68,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     //Constructor for the Adapter
     public SearchAdapter(Context context) {
 
-        //dummy data
-        storedData = context.getResources().getStringArray(R.array.dummy_values_search);
     }
 
 
@@ -62,6 +76,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     provides a reference to each of the widgets in the holder view
      */
     class ViewHolder extends RecyclerView.ViewHolder {
+
+        private LocationItem mLocationItem;
 
         public TextView mTextView;
         public CheckBox mCheckBox;
@@ -90,9 +106,15 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    getCallbacks().whenVisitedCheckboxToggled(isChecked);
+                    getDelegate().whenVisitedCheckboxToggled(mLocationItem, isChecked);
                 }
             });
+        }
+
+        private void updateHolder(LocationItem locationItem) {
+            mTextView.setText(locationItem.getLocationName());
+            mCheckBox.setChecked(locationItem.hasVisitedLocation());
+            mLocationItem = locationItem;
         }
     }
 
@@ -119,13 +141,17 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
         //replace the stuff inside of the view with the stuff in data
 
-        viewHolder.mTextView.setText(storedData[i]);
+        if(dataSource == null) return;
+
+        LocationItem item = getDataSource().getSearchItem(this, i);
+        viewHolder.updateHolder(item);
 
     }
 
     //get the size if the dataset
     @Override
     public int getItemCount() {
-        return storedData.length;
+        if(getDataSource() == null) return 0;
+        return getDataSource().getItemCount(this);
     }
 }
