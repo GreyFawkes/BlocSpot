@@ -52,6 +52,14 @@ public abstract class Table {
         return cursor.getString(columnIndex);
     }
 
+    protected static double getDouble(Cursor cursor, String column) {
+        int columnIndex = cursor.getColumnIndex(column);
+        if(columnIndex == -1) {
+            return -1d;
+        }
+        return cursor.getDouble(columnIndex);
+    }
+
     protected static long getLong(Cursor cursor, String column) {
         int columnIndex = cursor.getColumnIndex(column);
         if(columnIndex == -1) {

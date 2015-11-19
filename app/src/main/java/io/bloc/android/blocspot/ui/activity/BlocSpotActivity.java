@@ -2,23 +2,35 @@ package io.bloc.android.blocspot.ui.activity;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
+import io.bloc.android.blocspot.BlocSpotApplication;
 import io.bloc.android.blocspot.R;
+import io.bloc.android.blocspot.api.DataSource;
+import io.bloc.android.blocspot.api.model.LocationItem;
 import io.bloc.android.blocspot.ui.dialog.BlocSpotFilterDialogFragment;
 import io.bloc.android.blocspot.ui.dialog.BlocSpotLocationAlertDialog;
 import io.bloc.android.blocspot.ui.fragment.BlocSpotLocationListFragment;
+import io.bloc.android.blocspot.ui.fragment.BlocSpotMapFragment;
 import io.bloc.android.blocspot.ui.fragment.BlocSpotSearchListFragment;
 
 /**
@@ -37,11 +49,24 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
     SearchView mSearchView;
 
     //Google Map fragment
-    MapFragment mMapFragment;
+    BlocSpotMapFragment mMapFragment;
+
+    GoogleMap mGoogleMap;
+
+    //get location manager for the user's current position
+    LocationManager mLocationManager;
 
     //Activity Mode variables
     boolean mIsInMapMode;
     boolean mIsInSearchMode;
+
+    double mCurLatitude, mCurLongitude;
+
+    List<LocationItem> mLocationItems = new ArrayList<LocationItem>();
+
+    GoogleApiClient client;
+
+    Geofence.Builder geofenceBuilder = new Geofence.Builder();
 
 
     //----------Search interface---------
@@ -77,18 +102,20 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
         mIsInMapMode = true;
         mIsInSearchMode = false;
 
-            //wire up the interfaces with the adapters if needed here
+
+
+        //wire up the interfaces with the adapters if needed here
         //->
 
-            //Set up the toolbar
+        //Set up the toolbar
         mToolbar = (Toolbar) findViewById(R.id.tb_blocspot_activity);
         initActivityToolbar();
 
-            //set up the searchbar and listener
+        //set up the searchbar and listener
         mSearchView = (SearchView) findViewById(R.id.sv_blocspot_toolbar);
 
-            //if the search menu is dismissed remove the searchbar and
-            // and return the toolbar to its original state
+        //if the search menu is dismissed remove the searchbar and
+        // and return the toolbar to its original state
         mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
@@ -97,13 +124,13 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
             }
         });
 
-            //text listener for the searchView widget in the toolbar
+        //text listener for the searchView widget in the toolbar
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                    //send the given string 'query' to a fragment that can handle it
-                    //only if a fragment exists that has the callback
-                if(getSearchCallback() != null) {
+                //send the given string 'query' to a fragment that can handle it
+                //only if a fragment exists that has the callback
+                if (getSearchCallback() != null) {
                     getSearchCallback().searchLocationsWithQuery(query);
                 } else {
                     //Log.i(TAG, "no SearchCallback set");
@@ -117,12 +144,32 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
             }
         });
 
+
+        //build the locationItem Array
+        BlocSpotApplication.getSharedDataSource().fetchLocationItems(new DataSource.Callback<List<LocationItem>>() {
+            @Override
+            public void onSuccess(List<LocationItem> locationItems) {
+                mLocationItems = locationItems;
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+
+            }
+        });
+
         //insert a mapfragment into the fragment frameLayout
-        mMapFragment = MapFragment.newInstance();
+        mMapFragment = BlocSpotMapFragment.newInstance();
+        mMapFragment.getMapAsync(this);
         getFragmentManager().beginTransaction()
                 .add(R.id.fl_activity_fragment, mMapFragment, TAG_MAP_FRAGMENT)
                 .commit();
 
+//        //instantiate the googleApiClient as directed in documentation
+//        client = new GoogleApiClient.Builder(this)
+//                .addConnectionCallbacks(this)
+//                .addOnConnectionFailedListener(this)
+//                .add
     }
 
     //--------------------------private methods----------------------
@@ -412,8 +459,8 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
         } else {
 
             //attempt to find the MapFragment
-            MapFragment mapFragment =
-                    (MapFragment)getFragmentManager().findFragmentByTag(TAG_MAP_FRAGMENT);
+             mMapFragment =
+                    (BlocSpotMapFragment)getFragmentManager().findFragmentByTag(TAG_MAP_FRAGMENT);
 
             //detach current fragment from the fragment space
             getFragmentManager().beginTransaction()
@@ -422,19 +469,22 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
             //if the mapFragment cannot be found create a new one
             // and add it to the fragment space
-            if(mapFragment == null) {
-                mapFragment = MapFragment.newInstance();
+            if(mMapFragment == null) {
+                mMapFragment = BlocSpotMapFragment.newInstance();
                 getFragmentManager().beginTransaction()
-                        .add(R.id.fl_activity_fragment, mapFragment, TAG_MAP_FRAGMENT)
+                        .add(R.id.fl_activity_fragment, mMapFragment, TAG_MAP_FRAGMENT)
                         .commit();
 
                 //if the mapFragment already exists
                 //attach it to the fragment space
             } else {
                 getFragmentManager().beginTransaction()
-                        .attach(mapFragment)
+                        .attach(mMapFragment)
                         .commit();
             }
+
+            //attach listener to the mapFragment
+            mMapFragment.getMapAsync(this);
 
         }
 
@@ -443,12 +493,42 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
         toggleListMapMenuItem();
     }
 
+    //method to init the geofences and get the
+    private void initGeofences(){
+
+    }
+
     //-------------------------Interface Methods--------------------
 
-    //GoogleMap onReady method
+    //GoogleMap onReady method -
+    // everything that happens on the map needs to happen here
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
         googleMap.setMyLocationEnabled(true);
+        BlocSpotApplication.getSharedDataSource().fetchLocationItems(new DataSource.Callback<List<LocationItem>>() {
+            @Override
+            public void onSuccess(List<LocationItem> locationItems) {
+                mLocationItems = locationItems;
+
+                for (int i = 0; i < mLocationItems.size(); i++) {
+
+                    LatLng latLng = new LatLng(
+                            mLocationItems.get(i).getLocation().getLatitude(),
+                            mLocationItems.get(i).getLocation().getLongitude());
+
+                    googleMap.addMarker(new MarkerOptions()
+                        .title(mLocationItems.get(i).getLocationName())
+                        .position(latLng));
+                }
+
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+
+            }
+        });
+        Log.i("MapFragment", "onMapReady");
     }
 
 

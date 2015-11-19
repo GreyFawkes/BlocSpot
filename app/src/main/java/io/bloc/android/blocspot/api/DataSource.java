@@ -94,12 +94,14 @@ public class DataSource {
                     .setNotes("This is Location A")
                     .setHasVisited(true)
                     .setCategory(getCategoryItemByTitle("Cat Z").getRowId())
+                    .setGeoLocation(40d,-40d)
                     .insert(writeableDatabase);
             new LocationItemTable.Builder()
                     .setLocationName("Location C")
                     .setNotes("This is Location C")
                     .setHasVisited(false)
                     .setCategory(getCategoryItemByTitle("Cat C").getRowId())
+                    .setGeoLocation(40d,40d)
                     .insert(writeableDatabase);
             new LocationItemTable.Builder()
                     .setLocationName("Location T")
@@ -231,7 +233,7 @@ public class DataSource {
                 .insert(mDatabaseOpenHelper.getWritableDatabase());
     }
 
-        //update a locationItem in the Table
+        //update a locationItem in the Table, except the position of the location
     public void updateLocationItem(long id, String locationName, long categoryId,
                                    String locationNote, boolean hasVisitedLocation){
 
@@ -320,7 +322,8 @@ public class DataSource {
                 LocationItemTable.getLocationName(cursor),
                 LocationItemTable.getCategoryId(cursor),
                 LocationItemTable.getNotes(cursor),
-                LocationItemTable.getHasVisited(cursor)
+                LocationItemTable.getHasVisited(cursor),
+                LocationItemTable.getGeoPosition(cursor)
         );
     }
     private LocationItem locationItemFromCursorAndCloseCursor(Cursor cursor) {

@@ -51,6 +51,7 @@ public class BlocSpotSearchListFragment extends Fragment
         try {
             mActivity = (BlocSpotActivity)activity;
         } catch (ClassCastException e) {
+            e.printStackTrace();
             return;
             //do nothing
         }

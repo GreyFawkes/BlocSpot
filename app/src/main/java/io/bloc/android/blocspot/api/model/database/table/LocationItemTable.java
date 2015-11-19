@@ -3,6 +3,7 @@ package io.bloc.android.blocspot.api.model.database.table;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 import android.os.Build;
 
 /**
@@ -19,6 +20,8 @@ public class LocationItemTable extends Table {
     public static final String COLUMN_CATEGORY_ID = "category_id";
     public static final String COLUMN_NOTES = "notes";
     public static final String COLUMN_HAS_VISITED = "has_visited";
+    public static final String COLUMN_LATITUDE = "latitude";
+    public static final String COLUMN_LONGITUDE = "longitude";
 
 
     public static class Builder implements Table.Builder {
@@ -46,6 +49,12 @@ public class LocationItemTable extends Table {
 
         public Builder setHasVisited(boolean hasVisited) {
             values.put(COLUMN_HAS_VISITED, hasVisited);
+            return this;
+        }
+
+        public Builder setGeoLocation(double latitude, double longitude) {
+            values.put(COLUMN_LATITUDE, latitude);
+            values.put(COLUMN_LONGITUDE, longitude);
             return this;
         }
 
@@ -98,7 +107,7 @@ public class LocationItemTable extends Table {
             return readOnlyDatabase.rawQuery(
                     "SELECT * FROM " + TABLE_NAME
                             + " WHERE " + COLUMN_NAME + " LIKE ?"
-                            //+ " ORDER BY " + COLUMN_NAME + " ASC" //method can't seem to handle this line??
+                           // + " ORDER BY " + COLUMN_NAME //method can't seem to handle this line??
                     , args);
         }
 
@@ -121,7 +130,9 @@ public class LocationItemTable extends Table {
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_CATEGORY_ID + " INTEGER DEFAULT -1,"
                 + COLUMN_NOTES + " TEXT,"
-                + COLUMN_HAS_VISITED + " INTEGER DEFAULT 0"
+                + COLUMN_HAS_VISITED + " INTEGER DEFAULT 0,"
+                + COLUMN_LATITUDE + " DOUBLE DEFAULT 0,"
+                + COLUMN_LONGITUDE + " DOUBLE DEFAULT 0"
                 + ")";
     }
 
@@ -132,5 +143,11 @@ public class LocationItemTable extends Table {
     public static long getCategoryId(Cursor cursor) { return getLong(cursor, COLUMN_CATEGORY_ID); }
     public static String getNotes(Cursor cursor) { return getString(cursor, COLUMN_NOTES); }
     public static boolean getHasVisited(Cursor cursor) {return getBoolean(cursor, COLUMN_HAS_VISITED); }
+    public static Location getGeoPosition(Cursor cursor) {
+        Location location = new Location("");
+        location.setLatitude( getDouble(cursor, COLUMN_LATITUDE));
+        location.setLongitude( getDouble(cursor, COLUMN_LONGITUDE));
+        return location;
+    }
 
 }
