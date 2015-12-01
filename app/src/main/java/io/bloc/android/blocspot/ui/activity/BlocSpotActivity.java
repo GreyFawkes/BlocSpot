@@ -2,6 +2,8 @@ package io.bloc.android.blocspot.ui.activity;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -11,8 +13,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,6 +33,7 @@ import java.util.List;
 import io.bloc.android.blocspot.BlocSpotApplication;
 import io.bloc.android.blocspot.R;
 import io.bloc.android.blocspot.api.DataSource;
+import io.bloc.android.blocspot.api.intent.GeofenceIntentService;
 import io.bloc.android.blocspot.api.model.LocationItem;
 import io.bloc.android.blocspot.ui.dialog.BlocSpotFilterDialogFragment;
 import io.bloc.android.blocspot.ui.dialog.BlocSpotLocationAlertDialog;
@@ -36,13 +44,18 @@ import io.bloc.android.blocspot.ui.fragment.BlocSpotSearchListFragment;
 /**
  * Created by Administrator on 10/15/2015.
  */
-public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
+public class BlocSpotActivity extends Activity
+        implements OnMapReadyCallback,
+        GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks{
 
     //Final Static variables go here
     private static final String TAG = "BlocSpotActivity";
     private static final String TAG_DIALOG_FRAGMENT_FILTER = "BlocSpotFilterDialogFragment";
 
     private static final String TAG_MAP_FRAGMENT = "BlocSpotMapFragment";
+
+    private static final float GEOFENCE_DISTANCE_METERS = 1000f;
 
     //Member variables here
     Toolbar mToolbar;
@@ -62,11 +75,16 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
     double mCurLatitude, mCurLongitude;
 
+
     List<LocationItem> mLocationItems = new ArrayList<LocationItem>();
 
-    GoogleApiClient client;
+    GoogleApiClient mClient;
 
     Geofence.Builder geofenceBuilder = new Geofence.Builder();
+
+    List<Geofence> mGeofenceList = new ArrayList<>();
+
+    PendingIntent mGeofencePendingIntent;
 
 
     //----------Search interface---------
@@ -91,6 +109,24 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
     //--------------onCreate-------------------------
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+            //connect the API client
+        mClient.connect();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+            //disconnect the API client
+        mClient.disconnect();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +137,6 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
             //set up the stating mode of the Activity
         mIsInMapMode = true;
         mIsInSearchMode = false;
-
 
 
         //wire up the interfaces with the adapters if needed here
@@ -144,12 +179,12 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
             }
         });
 
-
         //build the locationItem Array
         BlocSpotApplication.getSharedDataSource().fetchLocationItems(new DataSource.Callback<List<LocationItem>>() {
             @Override
             public void onSuccess(List<LocationItem> locationItems) {
                 mLocationItems = locationItems;
+
             }
 
             @Override
@@ -158,6 +193,9 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
             }
         });
 
+        //build the API Client
+        buildAPIClient();
+
         //insert a mapfragment into the fragment frameLayout
         mMapFragment = BlocSpotMapFragment.newInstance();
         mMapFragment.getMapAsync(this);
@@ -165,11 +203,6 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
                 .add(R.id.fl_activity_fragment, mMapFragment, TAG_MAP_FRAGMENT)
                 .commit();
 
-//        //instantiate the googleApiClient as directed in documentation
-//        client = new GoogleApiClient.Builder(this)
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-//                .add
     }
 
     //--------------------------private methods----------------------
@@ -493,10 +526,107 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
         toggleListMapMenuItem();
     }
 
-    //method to init the geofences and get the
-    private void initGeofences(){
+    private void buildAPIClient() {
+        mClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+    }
+
+    //--------------------Geofence Methods
+
+    //return a GeofencingRequest
+    // with the trigger being ENTER
+    // and the geofences being those that were entered into the method
+    private GeofencingRequest getGeofencingRequest(List<Geofence> geofenceList) {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(geofenceList);
+        return builder.build();
+    }
+
+    //rebuild the geofence list using the locations ID's
+    private void rebuildGeofenceList(List<Geofence> list) {
+
+        //clear all items in the list - for rebuild
+        list.clear();
+
+        Log.i(TAG, "Location List Size: " + String.valueOf(mLocationItems.size()) );
+
+        //add new items to the list
+        for( int i = 0; i < mLocationItems.size() ; i++) {
+
+            //get the next location item's id
+            LocationItem item = mLocationItems.get(i);
+            String fenceId = "BlocSpotFence:" + item.getRowId();
+
+            //add a new geofence item to the list using the location id as the RequestID
+            list.add(new Geofence.Builder()
+                    .setRequestId(fenceId)
+                    .setCircularRegion(
+                            item.getLocation().getLatitude(),
+                            item.getLocation().getLongitude(),
+                            GEOFENCE_DISTANCE_METERS)
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                    .setLoiteringDelay(120000)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                            Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build());
+
+            Log.i(TAG, "thing: " + i);
+        }
+
 
     }
+
+    //create a pending Intent
+    private PendingIntent createGeofenceIntent() {
+
+        //build the specific intent
+        Intent intent = new Intent(this, GeofenceIntentService.class);
+
+        return PendingIntent.getService(
+                this, 0 , intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+    }
+
+    //add geofences and start monitoring
+    private void startGeofenceMonitoring() {
+
+        //rebuild the geofenceList
+        rebuildGeofenceList(mGeofenceList);
+
+        //add the geofenceList Intent to the LocationServices
+        LocationServices.GeofencingApi.addGeofences(
+                mClient,
+                getGeofencingRequest(mGeofenceList),
+                createGeofenceIntent()
+        ).setResultCallback(new ResultCallback<Status>() {
+            @Override
+            public void onResult(Status status) {
+                if(status.isSuccess()) {
+                    Log.i(TAG, "yay");
+                } else {
+                    Log.i(TAG, "booo");
+                }
+            }
+        });
+    }
+
+    //remove this applications' geofence monitoring
+    private void stopGeofenceMonitoring() {
+        LocationServices.GeofencingApi.removeGeofences(
+                mClient,
+                createGeofenceIntent()
+        ).setResultCallback(new ResultCallback<Status>() {
+            @Override
+            public void onResult(Status status) {
+                Log.i(TAG, "stop Result: " + status);
+            }
+        });
+    }
+
 
     //-------------------------Interface Methods--------------------
 
@@ -508,16 +638,15 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
         BlocSpotApplication.getSharedDataSource().fetchLocationItems(new DataSource.Callback<List<LocationItem>>() {
             @Override
             public void onSuccess(List<LocationItem> locationItems) {
-                mLocationItems = locationItems;
 
-                for (int i = 0; i < mLocationItems.size(); i++) {
+                for (int i = 0; i < locationItems.size(); i++) {
 
                     LatLng latLng = new LatLng(
-                            mLocationItems.get(i).getLocation().getLatitude(),
-                            mLocationItems.get(i).getLocation().getLongitude());
+                            locationItems.get(i).getLocation().getLatitude(),
+                            locationItems.get(i).getLocation().getLongitude());
 
                     googleMap.addMarker(new MarkerOptions()
-                        .title(mLocationItems.get(i).getLocationName())
+                        .title(locationItems.get(i).getLocationName())
                         .position(latLng));
                 }
 
@@ -532,5 +661,25 @@ public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
     }
 
 
+    //Connection Callbacks methods
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.i(TAG, "connected");
+            //stop any geofences that are currently working
+
+        startGeofenceMonitoring();
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    //On Connection Failed listener
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.i(TAG, "connection failed");
+    }
 
 }
