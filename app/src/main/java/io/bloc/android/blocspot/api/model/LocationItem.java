@@ -10,7 +10,7 @@ public class LocationItem extends Model {
     private String mLocationName;
     private String mLocationNotes;
 
-    private boolean mHasVisitedLocation;
+    private boolean mHasVisitedLocation, mIsSearchedLocation;
 
     private long mCategoryId;
     private Location mLocation;
@@ -26,6 +26,8 @@ public class LocationItem extends Model {
         mLocationNotes = locationNotes;
         mHasVisitedLocation = hasVisitedLocation;
         mLocation = location;
+        mIsSearchedLocation = false;
+
     }
 
 
@@ -42,6 +44,29 @@ public class LocationItem extends Model {
         mLocation.setLatitude(0.0d);
         mLocation.setLatitude(0.0d);
         mLocation.setAltitude(0.0d);
+        mIsSearchedLocation = false;
+
+    }
+
+        //a basic location item for testing
+    public LocationItem(String locationName, boolean isSearchedLocation) {
+        super(0l);
+        mLocationName = locationName;
+        mCategoryId = 0l;
+        mLocationNotes = "";
+        mHasVisitedLocation = false;
+        mLocation = new Location("");
+        mLocation.setLatitude(0.0d);
+        mLocation.setLatitude(0.0d);
+        mLocation.setAltitude(0.0d);
+        mIsSearchedLocation = isSearchedLocation;
+
+    }
+
+        //-----------setters------------
+
+    public void setIsSearchedLocation(boolean isSearchedLocation) {
+        mIsSearchedLocation = isSearchedLocation;
     }
 
 
@@ -60,6 +85,10 @@ public class LocationItem extends Model {
 
     public boolean hasVisitedLocation() {
         return mHasVisitedLocation;
+    }
+
+    public boolean isSearchedLocation() {
+        return mIsSearchedLocation;
     }
 
     public Location getLocation() {

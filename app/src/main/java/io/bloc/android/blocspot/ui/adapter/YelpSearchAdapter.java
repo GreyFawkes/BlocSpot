@@ -5,8 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
@@ -15,29 +13,18 @@ import io.bloc.android.blocspot.R;
 import io.bloc.android.blocspot.api.model.LocationItem;
 
 /**
- * Created by Administrator on 10/18/2015.
- *
- *
+ * Created by Administrator on 12/6/2015.
  */
-public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
+public class YelpSearchAdapter extends RecyclerView.Adapter<YelpSearchAdapter.ViewHolder> {
 
-    //private static final variables
-
-
-    //public static final variables
-
-
-    //private member variables
-
-
-    //interface for the adapter
     public interface Delegate {
-        void whenVisitedCheckboxToggled(LocationItem locationItem, boolean isChecked);
+
     }
 
+        //this is going to change
     public interface DataSource {
-        LocationItem getSearchItem(SearchAdapter searchAdapter, int position);
-        int getItemCount(SearchAdapter searchAdapter);
+        LocationItem getSearchItem(YelpSearchAdapter searchAdapter, int position);
+        int getItemCount(YelpSearchAdapter searchAdapter);
     }
 
     //--------interface variables--------
@@ -68,7 +55,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     private String storedData[];
 
     //Constructor for the Adapter
-    public SearchAdapter(Context context) {
+    public YelpSearchAdapter(Context context) {
 
     }
 
@@ -79,10 +66,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
      */
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        private LocationItem mLocationItem;
-
         public TextView mTextView;
-        public CheckBox mCheckBox;
 
         public ViewHolder(View view) {
             super(view);
@@ -97,28 +81,18 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
         //-----private methods for viewHolder Class-----
 
-            //method to wire up the holder elements
+        //method to wire up the holder elements
         private void initUI(View view) {
-
-            mTextView = (TextView) view.findViewById(R.id.tv_stored_location_name);
-            mCheckBox = (CheckBox) view.findViewById(R.id.cb_stored_location_has_visited);
+            mTextView = (TextView) view.findViewById(R.id.tv_yelp_location_name);
         }
 
-            //implement the holder listeners
+        //implement the holder listeners
         private void initListeners() {
-            mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    getDelegate().whenVisitedCheckboxToggled(mLocationItem, isChecked);
-                }
-            });
+
         }
 
-        private void updateHolder(LocationItem locationItem) {
-            mLocationItem = locationItem;
-            mTextView.setText(locationItem.getLocationName());
-            mCheckBox.setChecked(locationItem.hasVisitedLocation());
-
+        private void updateHolder(LocationItem location) {
+            mTextView.setText(location.getLocationName());
         }
     }
 
@@ -128,9 +102,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
         //inflate the correct view
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.stored_search_location, viewGroup, false);
+                .inflate(R.layout.yelp_location_item, viewGroup, false);
 
-        return new ViewHolder(view);
+        //additional settings here
+        //....
+
+        //create the object and return it
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
     }
 
 
@@ -153,4 +132,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         if(getDataSource() == null) return 0;
         return getDataSource().getItemCount(this);
     }
+
+
 }

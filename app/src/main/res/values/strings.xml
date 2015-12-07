@@ -14,4 +14,9 @@
     <string name="dialog_location_item_edit_note">Edit Location Note</string>
     <string name="dialog_location_item_save_note">Save Location Note</string>
 
+    <string name="consumer_key">zK2exzvOrxfs2M09bj0Heg</string>
+    <string name="consumer_secret">XFT3H73To_iJRZi28Mf9b8mMFvQ</string>
+    <string name="token">2-kynxAfNS8Yg5dmAWjVVjtpcLVHN59r</string>
+    <string name="token_secret">8TQKXUuSrtXG1Ej4TI4n47q5K94</string>
+
 </resources>

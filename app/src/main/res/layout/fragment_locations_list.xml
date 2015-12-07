@@ -7,7 +7,22 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_locations_list"
             android:scrollbars="vertical"
+            android:background="@color/accent_material_dark"
+            android:layout_height="100dp"
+            android:layout_width="match_parent"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/background_dark"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_yelp_locations_list"
+            android:scrollbars="vertical"
+            android:background="@android:color/background_light"
             android:layout_height="match_parent"
             android:layout_width="match_parent"/>
+
+
 
 </LinearLayout>
