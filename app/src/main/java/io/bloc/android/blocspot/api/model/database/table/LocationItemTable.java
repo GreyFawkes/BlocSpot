@@ -115,6 +115,23 @@ public class LocationItemTable extends Table {
 
     }
 
+    //fetches a single location based on its id
+    public static Cursor fetchLocationById(SQLiteDatabase readOnlyDatabase, long locationId) {
+
+        String[] args = new String[]{String.valueOf(locationId)};
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            return readOnlyDatabase.query(true, TABLE_NAME,null, "id" + " LIKE ?",
+                    args, null,null,null,null );
+        } else {
+            return readOnlyDatabase.rawQuery(
+                    "SELECT * FROM " + TABLE_NAME
+                            + " WHERE " + "id" + " LIKE ?"
+                    // + " ORDER BY " + COLUMN_NAME //method can't seem to handle this line??
+                    , args);
+        }
+    }
+
     //------getters for this table name
     @Override
     public String getTableName() {

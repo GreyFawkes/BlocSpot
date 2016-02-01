@@ -107,6 +107,8 @@ public class DataSource {
                     .setLocationName("Location T")
                     .setNotes("This is Location T")
                     .insert(writeableDatabase);
+            new LocationItemTable.Builder()
+                    .insert(writeableDatabase);
 
         }
     }
@@ -233,6 +235,12 @@ public class DataSource {
                 .insert(mDatabaseOpenHelper.getWritableDatabase());
     }
 
+        //add a new blank location to the database
+    public long addBlankLocation() {
+        return new CategoryItemTable.Builder()
+                .insert(mDatabaseOpenHelper.getWritableDatabase());
+    }
+
         //update a locationItem in the Table, except the position of the location
     public void updateLocationItem(long id, String locationName, long categoryId,
                                    String locationNote, boolean hasVisitedLocation){
@@ -301,6 +309,21 @@ public class DataSource {
 
     }
 
+    public LocationItem getLocationItem(long locationId) {
+
+        Cursor cursor;
+
+        cursor = LocationItemTable
+                .fetchLocationById(mDatabaseOpenHelper.getReadableDatabase(), locationId);
+
+        if(cursor.moveToFirst()) {
+            return locationItemFromCursorAndCloseCursor(cursor);
+        }
+        cursor.close();
+        return null;
+
+    }
+
         //getter methods for categoryItem from cursor
     private CategoryItem categoryItemFromCursor(Cursor cursor) {
         return new CategoryItem(
@@ -309,6 +332,7 @@ public class DataSource {
                 CategoryItemTable.getIsChecked(cursor)
         );
     }
+
     private CategoryItem categoryItemFromCursorAndCloseCursor(Cursor cursor) {
         CategoryItem item = categoryItemFromCursor(cursor);
         cursor.close();

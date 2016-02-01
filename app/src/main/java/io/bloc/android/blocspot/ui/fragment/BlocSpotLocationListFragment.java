@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ public class BlocSpotLocationListFragment extends Fragment
     public static final String TAG_LOCATION_LIST_FRAGMENT = "LocationListFragment";
     //private member variables
 
+    Button mAddLocationButton;
+
     RecyclerView mRecyclerView;
     LocationAdapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
@@ -55,9 +58,10 @@ public class BlocSpotLocationListFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-            //inflate view and hook up UI elements
+            //inflate view and hook up UI elements and listeners
         View view = inflater.inflate(R.layout.fragment_search_list, container, false);
         initUI(view);
+        initListeners();
 
         return view;
     }
@@ -141,6 +145,9 @@ public class BlocSpotLocationListFragment extends Fragment
     //initialize all UI dialog elements
     private void initUI(View view) {
 
+        //wire up button
+        mAddLocationButton = (Button) view.findViewById(R.id.btn_location_list_add_location);
+
         //wire up RecyclerView
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_search_list);
 
@@ -163,6 +170,20 @@ public class BlocSpotLocationListFragment extends Fragment
     //initialize Listeners
     private void initListeners() {
 
+        mAddLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG_LOCATION_LIST_FRAGMENT, "new location button pressed");
+
+                //add new location to list
+//                long newLocationId = BlocSpotApplication.getSharedDataSource().addBlankLocation();
+//                LocationItem newLocation =
+//                        BlocSpotApplication.getSharedDataSource().getLocationItem(newLocationId);
+
+
+            }
+        });
+
     }
 
     //initialize the Location Data from the Database
@@ -175,7 +196,7 @@ public class BlocSpotLocationListFragment extends Fragment
                     return;
                 }
 
-                //get the list of locations
+                //get the list of locations3
                 mLocationItems = locationItems;
                 mAdapter.notifyDataSetChanged();
 
