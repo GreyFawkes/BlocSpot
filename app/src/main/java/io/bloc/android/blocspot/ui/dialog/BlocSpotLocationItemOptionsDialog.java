@@ -42,6 +42,8 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     private static final String ARGS_NOTE = "itemOptionsDialog_note";
     private static final String ARGS_CATEGORY_ID = "itemOptionsDialog_categoryId";
     private static final String ARGS_HAS_VISITED_LOCATION = "itemOptionsDialog_hasVisitedLocation";
+    private static final String ARGS_LONGITUDE = "itemOptionsDialog_longitude";
+    private static final String ARGS_LATITUDE = "itemOptionsDialog_latitude";
 
     //member variables
     Button mButtonNavigateTo, mButtonEditNote, mButtonDelete;
@@ -51,6 +53,7 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     String mLocationNote, mLocationName;
     long mCategoryId, mLocationId;
     boolean mHasVisitedLocation;
+    double mLatitude, mLongitude;
 
     boolean mEditMode = false;
 
@@ -61,7 +64,8 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
 
     public interface Callback {
         void onDialogOkPressed(long locationId, String locationName, String locationNote,
-                               long categoryId, boolean hasVisitedLocation);
+                               long categoryId, boolean hasVisitedLocation,
+                               double latitude, double longitude);
     }
 
     private WeakReference<Callback> mCallback;
@@ -88,6 +92,8 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
         args.putLong(ARGS_CATEGORY_ID, locationItem.getCategoryId());
         args.putString(ARGS_NOTE, locationItem.getLocationNotes());
         args.putBoolean(ARGS_HAS_VISITED_LOCATION, locationItem.hasVisitedLocation());
+        args.putDouble(ARGS_LATITUDE, locationItem.getLocation().getLatitude());
+        args.putDouble(ARGS_LONGITUDE, locationItem.getLocation().getLongitude());
 
         dialogFragment.setArguments(args);
 
@@ -107,6 +113,8 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
             mLocationName = getArguments().getString(ARGS_LOCATION_NAME);
             mLocationId = getArguments().getLong(ARGS_LOCATION_ID);
             mHasVisitedLocation = getArguments().getBoolean(ARGS_HAS_VISITED_LOCATION);
+            mLatitude = getArguments().getDouble(ARGS_LATITUDE);
+            mLongitude = getArguments().getDouble(ARGS_LONGITUDE);
         }
 
         // // TODO: 11/14/2015 add the title of the location name somewhere
@@ -149,7 +157,8 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         getCallback().onDialogOkPressed(
                                 mLocationId,mLocationName,mLocationNote,
-                                mCategoryId,mHasVisitedLocation);
+                                mCategoryId,mHasVisitedLocation,
+                                mLatitude, mLongitude);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

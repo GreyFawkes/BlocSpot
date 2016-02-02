@@ -21,6 +21,7 @@ import io.bloc.android.blocspot.api.DataSource;
 import io.bloc.android.blocspot.api.model.LocationItem;
 import io.bloc.android.blocspot.ui.adapter.LocationAdapter;
 import io.bloc.android.blocspot.ui.dialog.BlocSpotLocationItemOptionsDialog;
+import io.bloc.android.blocspot.ui.dialog.BlocSpotNewLocationItemDialog;
 
 /**
  * Created by Administrator on 10/15/2015.
@@ -29,7 +30,8 @@ public class BlocSpotLocationListFragment extends Fragment
     implements
         LocationAdapter.Delegate,
         LocationAdapter.DataSource,
-        BlocSpotLocationItemOptionsDialog.Callback{
+        BlocSpotLocationItemOptionsDialog.Callback,
+        BlocSpotNewLocationItemDialog.Callback{
 
     //private static final variables
 
@@ -42,6 +44,8 @@ public class BlocSpotLocationListFragment extends Fragment
     RecyclerView mRecyclerView;
     LocationAdapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
+
+
 
     List<LocationItem> mLocationItems = new ArrayList<LocationItem>();
 
@@ -130,11 +134,13 @@ public class BlocSpotLocationListFragment extends Fragment
     //------------Interface methods: Callback - optionsDialog
 
     @Override
-    public void onDialogOkPressed(long locationId, String locationName, String locationNote, long categoryId, boolean hasVisitedLocation) {
+    public void onDialogOkPressed(long locationId, String locationName, String locationNote,
+                                  long categoryId, boolean hasVisitedLocation,
+                                  double latitude, double longitude) {
 
 
         BlocSpotApplication.getSharedDataSource().updateLocationItem(
-                locationId, locationName, categoryId, locationNote, hasVisitedLocation
+                locationId, locationName, categoryId, locationNote, hasVisitedLocation, latitude, longitude
         );
         updateLocationDataSet();
         Log.i(TAG_LOCATION_LIST_FRAGMENT, locationId + " " + locationName + " " + locationNote + " " + categoryId + " " + hasVisitedLocation);
@@ -168,18 +174,33 @@ public class BlocSpotLocationListFragment extends Fragment
     }
 
     //initialize Listeners
-    private void initListeners() {
+    public void initListeners() {
+
+        //this may not be legal // TODO: 2/2/2016 find a better way
+        final BlocSpotLocationListFragment thisFragment = this;
+        /////
+
 
         mAddLocationButton.setOnClickListener(new View.OnClickListener() {
+
+            BlocSpotNewLocationItemDialog newLocationDialog;
+
             @Override
             public void onClick(View v) {
                 Log.i(TAG_LOCATION_LIST_FRAGMENT, "new location button pressed");
 
                 //add new location to list
-//                long newLocationId = BlocSpotApplication.getSharedDataSource().addBlankLocation();
-//                LocationItem newLocation =
-//                        BlocSpotApplication.getSharedDataSource().getLocationItem(newLocationId);
+                long newLocationId = BlocSpotApplication.getSharedDataSource().addBlankLocation();
+                LocationItem newLocation =
+                      BlocSpotApplication.getSharedDataSource().getLocationItemById(newLocationId);
 
+                BlocSpotNewLocationItemDialog newLocationDialog =
+                        BlocSpotNewLocationItemDialog.newInstance(newLocation);
+
+                newLocationDialog.setCallback(thisFragment);
+
+                newLocationDialog.show(getFragmentManager(),
+                        BlocSpotNewLocationItemDialog.TAG_NEW_LOCATION_DIALOG_FRAGMENT);
 
             }
         });

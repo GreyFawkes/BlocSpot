@@ -6,6 +6,7 @@
     <string name="menu_item_search_locations">Search</string>
     <string name="menu_item_close_search_locations">Close</string>
     <string name="location_list_frag_add_location">Add Location</string>
+    <string name="dialog_new_location_item_title">Location Title</string>
     <string name="dialog_new_location_item_longitude">Longitude</string>
     <string name="dialog_new_location_item_latitude">Latitude</string>
     <string name="dialog_add_category_hint">Title</string>

@@ -6,6 +6,8 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +36,8 @@ import io.bloc.android.blocspot.api.model.LocationItem;
 public class BlocSpotNewLocationItemDialog extends DialogFragment {
 
     //public static final Variables
-    public static final String FILTER_DIALOG_ARGS = "locationOptionsDialogArgs";
-    public static final String TAG_NEW_LOCATION_DIALOG_FRAGMENT = "locationOptionsDiaFrag";
+    public static final String FILTER_DIALOG_ARGS = "newlocationOptionsDialogArgs";
+    public static final String TAG_NEW_LOCATION_DIALOG_FRAGMENT = "newlocationOptionsDiaFrag";
 
     //private static final variables
 
@@ -44,15 +46,18 @@ public class BlocSpotNewLocationItemDialog extends DialogFragment {
     private static final String ARGS_NOTE = "itemOptionsDialog_note";
     private static final String ARGS_CATEGORY_ID = "itemOptionsDialog_categoryId";
     private static final String ARGS_HAS_VISITED_LOCATION = "itemOptionsDialog_hasVisitedLocation";
+    private static final String ARGS_LONGITUDE = "itemOptionsDialog_longitude";
+    private static final String ARGS_LATITUDE = "itemOptionsDialog_latitude";
 
     //member variables
-    Button mButtonNavigateTo, mButtonEditNote, mButtonDelete;
+    Button mButtonEditNote;
     Spinner mSpinnerCategory;
-    EditText mNoteEditText;
+    EditText mEditTextLocationNote, mEditTextLocationName, mEditTextLatitude, mEditTextLongitude;
 
     String mLocationNote, mLocationName;
     long mCategoryId, mLocationId;
     boolean mHasVisitedLocation;
+    double mLatitude, mLongitude;
 
     boolean mEditMode = false;
 
@@ -63,7 +68,8 @@ public class BlocSpotNewLocationItemDialog extends DialogFragment {
 
     public interface Callback {
         void onDialogOkPressed(long locationId, String locationName, String locationNote,
-                               long categoryId, boolean hasVisitedLocation);
+                               long categoryId, boolean hasVisitedLocation,
+                               double latitude, double longitude);
     }
 
     private WeakReference<Callback> mCallback;
@@ -90,6 +96,8 @@ public class BlocSpotNewLocationItemDialog extends DialogFragment {
         args.putLong(ARGS_CATEGORY_ID, locationItem.getCategoryId());
         args.putString(ARGS_NOTE, locationItem.getLocationNotes());
         args.putBoolean(ARGS_HAS_VISITED_LOCATION, locationItem.hasVisitedLocation());
+        args.putDouble(ARGS_LATITUDE, locationItem.getLocation().getLatitude());
+        args.putDouble(ARGS_LONGITUDE, locationItem.getLocation().getLongitude());
 
         dialogFragment.setArguments(args);
 
@@ -109,6 +117,8 @@ public class BlocSpotNewLocationItemDialog extends DialogFragment {
             mLocationName = getArguments().getString(ARGS_LOCATION_NAME);
             mLocationId = getArguments().getLong(ARGS_LOCATION_ID);
             mHasVisitedLocation = getArguments().getBoolean(ARGS_HAS_VISITED_LOCATION);
+            mLatitude = getArguments().getDouble(ARGS_LATITUDE);
+            mLongitude =  getArguments().getDouble(ARGS_LONGITUDE);
         }
 
         // // TODO: 11/14/2015 add the title of the location name somewhere
@@ -138,20 +148,21 @@ public class BlocSpotNewLocationItemDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         View view = getActivity().getLayoutInflater()
-                .inflate(R.layout.dialog_fragment_location_item_options, null);
+                .inflate(R.layout.dialog_fragment_new_location_item, null);
 
         initUI(view);
 
         //if a dialog is created, show the following
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
-                .setTitle("Filter")
+                .setTitle("")
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getCallback().onDialogOkPressed(
                                 mLocationId,mLocationName,mLocationNote,
-                                mCategoryId,mHasVisitedLocation);
+                                mCategoryId,mHasVisitedLocation,
+                                mLatitude, mLongitude);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -184,15 +195,19 @@ public class BlocSpotNewLocationItemDialog extends DialogFragment {
     private void initUIElements(View view) {
 
         //wire up the buttons
-        mButtonNavigateTo = (Button) view.findViewById(R.id.btn_location_item_option_navigateTo);
-        mButtonDelete = (Button) view.findViewById(R.id.btn_location_item_option_delete_item);
-        mButtonEditNote = (Button) view.findViewById(R.id.btn_location_item_option_edit_note);
+        mButtonEditNote = (Button) view.findViewById(R.id.btn_new_location_item_option_edit_note);
 
         //wire up EditText
-        mNoteEditText = (EditText) view.findViewById(R.id.et_location_item_option_note);
+        mEditTextLocationNote = (EditText) view.findViewById(R.id.et_new_location_item_option_note);
+        mEditTextLocationName = (EditText) view.findViewById(R.id.et_new_location_item_title);
+
+        mEditTextLatitude = (EditText) view.findViewById(R.id.et_new_location_latitude);
+        mEditTextLatitude.setText(String.valueOf(mLatitude));
+        mEditTextLongitude = (EditText) view.findViewById(R.id.et_new_location_longitude);
+        mEditTextLongitude.setText(String.valueOf(mLongitude));
 
         //wire up the spinner
-        mSpinnerCategory = (Spinner) view.findViewById(R.id.sp_location_item_option_category);
+        mSpinnerCategory = (Spinner) view.findViewById(R.id.sp_new_location_item_option_category);
 
 //        mSpinnerCategoryAdapter = ArrayAdapter.createFromResource(getActivity(),
 //                R.array.dummy_values_cat, android.R.layout.simple_spinner_item);
@@ -211,19 +226,81 @@ public class BlocSpotNewLocationItemDialog extends DialogFragment {
     //initialize repeat Listeners
     private void initListeners() {
 
-        //action when the user clicks the NavigateTo button
-        mButtonNavigateTo.setOnClickListener(new View.OnClickListener() {
+            //when the user modifies the title of the location save those changes
+        mEditTextLocationName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "Navigate to this location", Toast.LENGTH_SHORT).show();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //not needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mLocationName = s.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //not needed
             }
         });
 
-        //action when the user clicks the Delete button
-        mButtonDelete.setOnClickListener(new View.OnClickListener() {
+        mEditTextLatitude.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "Delete this location from memory", Toast.LENGTH_SHORT).show();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                double latitude;
+                try {
+                    latitude = Double.parseDouble(s.toString());
+                } catch (NumberFormatException e) {
+                    latitude = 0d;
+                }
+                if(latitude < -90d) {
+                    latitude = -90d;
+                    mEditTextLongitude.setText("-90");
+                }
+                if(latitude > 90d) {
+                    latitude = 90d;
+                    mEditTextLongitude.setText("90");
+                }
+                mLatitude = latitude;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        mEditTextLongitude.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                double longitude;
+                try {
+                    longitude = Double.parseDouble(s.toString());
+                } catch (NumberFormatException e) {
+                    longitude = 0d;
+                }
+                if(longitude < -180d) {
+                    longitude = -180d;
+                    mEditTextLongitude.setText("-180");
+                }
+                if(longitude > 180d) {
+                    longitude = 180d;
+                    mEditTextLongitude.setText("180");
+                }
+                mLongitude = longitude;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -243,9 +320,9 @@ public class BlocSpotNewLocationItemDialog extends DialogFragment {
                     //mEditMode is false
                     mEditMode = false;
                     //get the current Note string and set it as the current note
-                    mLocationNote = mNoteEditText.getText().toString();
+                    mLocationNote = mEditTextLocationNote.getText().toString();
                     //make the view gone
-                    mNoteEditText.setVisibility(View.GONE);
+                    mEditTextLocationNote.setVisibility(View.GONE);
                     //change the button text to Edit location note
                     mButtonEditNote.setText(R.string.dialog_location_item_edit_note);
 
@@ -262,9 +339,9 @@ public class BlocSpotNewLocationItemDialog extends DialogFragment {
 
                     mEditMode = true;
                     //set the text in the EditText to the current note string
-                    mNoteEditText.setText(mLocationNote);
+                    mEditTextLocationNote.setText(mLocationNote);
                     //set the textView to visible
-                    mNoteEditText.setVisibility(View.VISIBLE);
+                    mEditTextLocationNote.setVisibility(View.VISIBLE);
                     //change the text on the button to 'Save location Note'
                     mButtonEditNote.setText(R.string.dialog_location_item_save_note);
                     //set mEditMode to true

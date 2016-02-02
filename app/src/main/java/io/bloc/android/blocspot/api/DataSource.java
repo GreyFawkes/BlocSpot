@@ -105,9 +105,8 @@ public class DataSource {
                     .insert(writeableDatabase);
             new LocationItemTable.Builder()
                     .setLocationName("Location T")
+                    .setGeoLocation(-20d, -20d)
                     .setNotes("This is Location T")
-                    .insert(writeableDatabase);
-            new LocationItemTable.Builder()
                     .insert(writeableDatabase);
 
         }
@@ -237,13 +236,15 @@ public class DataSource {
 
         //add a new blank location to the database
     public long addBlankLocation() {
-        return new CategoryItemTable.Builder()
+        return new LocationItemTable.Builder()
+                .setLocationName("")
                 .insert(mDatabaseOpenHelper.getWritableDatabase());
     }
 
         //update a locationItem in the Table, except the position of the location
     public void updateLocationItem(long id, String locationName, long categoryId,
-                                   String locationNote, boolean hasVisitedLocation){
+                                   String locationNote, boolean hasVisitedLocation,
+                                   double latitude, double longitude){
 
             //set the id of the entry to update
         String stringFilter = "id=" + id;
@@ -254,6 +255,8 @@ public class DataSource {
         args.put(LocationItemTable.COLUMN_CATEGORY_ID, categoryId);
         args.put(LocationItemTable.COLUMN_NOTES, locationNote);
         args.put(LocationItemTable.COLUMN_HAS_VISITED, hasVisitedLocation);
+        args.put(LocationItemTable.COLUMN_LATITUDE, latitude);
+        args.put(LocationItemTable.COLUMN_LONGITUDE, longitude);
 
             //update the entry
         mDatabaseOpenHelper.getWritableDatabase()
@@ -309,7 +312,8 @@ public class DataSource {
 
     }
 
-    public LocationItem getLocationItem(long locationId) {
+        //return a single location item from the database using the LocationItem's id
+    public LocationItem getLocationItemById(long locationId) {
 
         Cursor cursor;
 

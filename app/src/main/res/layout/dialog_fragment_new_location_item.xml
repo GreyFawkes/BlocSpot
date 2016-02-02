@@ -5,6 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_new_location_item_title"
+        android:hint="@string/dialog_new_location_item_title"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,6 +20,20 @@
         android:id="@+id/sp_new_location_item_option_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_new_location_latitude"
+        android:hint="@string/dialog_new_location_item_latitude"
+        android:inputType="numberDecimal"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_new_location_longitude"
+        android:hint="@string/dialog_new_location_item_longitude"
+        android:inputType="numberDecimal"/>
 
     <Button
         android:id="@+id/btn_new_location_item_option_edit_note"
@@ -32,21 +52,6 @@
         android:background="@android:drawable/edit_text"
         android:textColor="@android:color/primary_text_light"
         android:visibility="gone"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/et_new_location_latitude"
-        android:hint="@string/dialog_new_location_item_latitude"
-        android:inputType="numberDecimal"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/et_new_location_longitude"
-        android:hint="@string/dialog_new_location_item_longitude"
-        android:inputType="numberDecimal"/>
-
 
 
 </LinearLayout>
