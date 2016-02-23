@@ -26,7 +26,7 @@ import io.bloc.android.blocspot.ui.fragment.BlocSpotSearchListFragment;
  *
  * edit Max--
  *
- *  for test---
+ *  for test
  */
 public class BlocSpotActivity extends Activity implements OnMapReadyCallback{
 
