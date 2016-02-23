@@ -6,6 +6,8 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +50,9 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
     //member variables
     Button mButtonNavigateTo, mButtonEditNote, mButtonDelete;
     Spinner mSpinnerCategory;
-    EditText mNoteEditText;
+    EditText mNoteEditText, mEditTextLocationName;
+
+//    EditText  mEditTextLatitude, mEditTextLongitude;
 
     String mLocationNote, mLocationName;
     long mCategoryId, mLocationId;
@@ -151,7 +155,7 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
         //if a dialog is created, show the following
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
-                .setTitle("Filter")
+                .setTitle("")
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -198,6 +202,15 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
         //wire up EditText
         mNoteEditText = (EditText) view.findViewById(R.id.et_location_item_option_note);
 
+        mEditTextLocationName = (EditText) view.findViewById(R.id.et_location_item_option_name);
+        mEditTextLocationName.setText(mLocationName);
+
+//        mEditTextLatitude = (EditText) view.findViewById(R.id.et_location_item_option_latitude);
+//        mEditTextLatitude.setText(String.valueOf(mLatitude));
+//
+//        mEditTextLongitude = (EditText) view.findViewById(R.id.et_location_item_option_longitude);
+//        mEditTextLongitude.setText(String.valueOf(mLongitude));
+
         //wire up the spinner
         mSpinnerCategory = (Spinner) view.findViewById(R.id.sp_location_item_option_category);
 
@@ -217,6 +230,85 @@ public class BlocSpotLocationItemOptionsDialog extends DialogFragment {
 
     //initialize repeat Listeners
     private void initListeners() {
+
+            //proper formatting of the title, latitude and longitude
+        mEditTextLocationName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mLocationName = s.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+//        mEditTextLatitude.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                double latitude;
+//                try {
+//                    latitude = Double.parseDouble(s.toString());
+//                } catch (NumberFormatException e) {
+//                    latitude = 0d;
+//                }
+//                if(latitude < -90d) {
+//                    latitude = -90d;
+//                    mEditTextLongitude.setText("-90");
+//                }
+//                if(latitude > 90d) {
+//                    latitude = 90d;
+//                    mEditTextLongitude.setText("90");
+//                }
+//                mLatitude = latitude;
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        });
+//        mEditTextLongitude.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                double longitude;
+//                try {
+//                    longitude = Double.parseDouble(s.toString());
+//                } catch (NumberFormatException e) {
+//                    longitude = 0d;
+//                }
+//                if(longitude < -180d) {
+//                    longitude = -180d;
+//                    mEditTextLongitude.setText("-180");
+//                }
+//                if(longitude > 180d) {
+//                    longitude = 180d;
+//                    mEditTextLongitude.setText("180");
+//                }
+//                mLongitude = longitude;
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        });
 
             //action when the user clicks the NavigateTo button
         mButtonNavigateTo.setOnClickListener(new View.OnClickListener() {

@@ -26,14 +26,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/et_new_location_latitude"
         android:hint="@string/dialog_new_location_item_latitude"
-        android:inputType="numberDecimal"/>
+        android:inputType="numberDecimal|numberSigned"/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/et_new_location_longitude"
         android:hint="@string/dialog_new_location_item_longitude"
-        android:inputType="numberDecimal"/>
+        android:inputType="numberDecimal|numberSigned"/>
 
     <Button
         android:id="@+id/btn_new_location_item_option_edit_note"
