@@ -29,3 +29,6 @@ proguard/
 
 # idea folders
 *.idea
+
+# app.iml
+app/app.iml
