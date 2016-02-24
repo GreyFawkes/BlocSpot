@@ -120,6 +120,8 @@ public class GeofenceIntentService extends IntentService {
         //create an intent for
         Intent notificationIntent = new Intent(getApplicationContext(), BlocSpotActivity.class);
 
+        if()
+
         //create a task stack?
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 
