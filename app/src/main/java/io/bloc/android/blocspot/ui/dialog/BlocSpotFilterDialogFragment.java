@@ -166,22 +166,25 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
     //------------Implemented Delegate methods
     @Override
     public void onDialogOkPressed(String categoryTitle) {
+
+            //make sure to check if the category is null, the app will break otherwise
+        if(categoryTitle != null) {
             //add a new item to the CategoryItemTable with info from addItemDialog
-        BlocSpotApplication.getSharedDataSource().addCategoryItem(categoryTitle);
-        //// TODO: 11/5/2015 why does initCategoryDataSet not cause all the views to update in the adapter
+            BlocSpotApplication.getSharedDataSource().addCategoryItem(categoryTitle);
+            //// TODO: 11/5/2015 why does initCategoryDataSet not cause all the views to update in the adapter
 //        initCategoryDataSet();  //for some reason this does not refresh the entire list
 
             //so instead I will add the item to the end of the list,
             //if the user makes a new filterDialog the list will be sorted
-        CategoryItem newItem = BlocSpotApplication.getSharedDataSource()
-                .getCategoryItemByTitle(categoryTitle);
-        if(newItem != null) {
-            mCategoryItems.add(newItem);
-            Toast.makeText(
-                    getActivity(),
-                    "new category added (will be at the bottom)",
-                    Toast.LENGTH_SHORT).show();
-           // mAdapter.notifyDataSetChanged(); I don't seem to need this????
+            CategoryItem newItem = BlocSpotApplication.getSharedDataSource()
+                    .getCategoryItemByTitle(categoryTitle);
+            if (newItem != null) {
+                mCategoryItems.add(newItem);
+                Toast.makeText(
+                        getActivity(),
+                        "new category added (will be at the bottom)",
+                        Toast.LENGTH_SHORT).show();
+            }
         }
 
     }
