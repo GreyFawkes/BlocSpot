@@ -43,10 +43,6 @@ import io.bloc.android.blocspot.ui.fragment.BlocSpotSearchListFragment;
 
 /**
  * Created by Administrator on 10/15/2015.
- *
- * edit Max--
- *
- *  for 
  */
 public class BlocSpotActivity extends Activity
         implements OnMapReadyCallback,
