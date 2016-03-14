@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,21 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
         //List variables
     private List<CategoryItem> mCategoryItems = new ArrayList<CategoryItem>();
 
+    public interface Callbacks{
+        void onCloseFilter(boolean filterChanged);
+    }
+
+    WeakReference<Callbacks> callbacks;
+
+    public void setCallbacks(Callbacks callbacks){
+        this.callbacks = new WeakReference<Callbacks>(callbacks);
+    }
+
+    public Callbacks getCallbacks() {
+        if(callbacks == null) return null;
+        return callbacks.get();
+    }
+
         //newInstance method
     public static BlocSpotFilterDialogFragment newInstance() {
         BlocSpotFilterDialogFragment dialogFragment = new BlocSpotFilterDialogFragment();
@@ -63,7 +79,7 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
         return dialogFragment;
     }
 
-    //--------------------onCreate
+    //--------------------onCreate--------------------
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,6 +129,8 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
         //set up listeners
         initListeners();
 
+
+
         //if a dialog is created, show the following
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
@@ -120,7 +138,8 @@ public class BlocSpotFilterDialogFragment extends DialogFragment
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getActivity(), "This dialog works", Toast.LENGTH_SHORT).show();
+                            //for now always perform onCloseFilter
+                        getCallbacks().onCloseFilter(true);
                     }
                 }).create();
 

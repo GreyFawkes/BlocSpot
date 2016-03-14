@@ -33,6 +33,7 @@ import io.bloc.android.blocspot.api.network.yelp.Yelp;
 import io.bloc.android.blocspot.ui.activity.BlocSpotActivity;
 import io.bloc.android.blocspot.ui.adapter.SearchAdapter;
 import io.bloc.android.blocspot.ui.adapter.YelpSearchAdapter;
+import io.bloc.android.blocspot.ui.dialog.BlocSpotFilterDialogFragment;
 
 /**
  * Created by Administrator on 10/18/2015.
@@ -284,6 +285,7 @@ public class BlocSpotSearchListFragment extends Fragment
 
     }
 
+
         //get all the important bits in the JSON string for the yelpAdapter
     private String processJSON(String jsonString) throws JSONException {
         JSONObject json = new JSONObject(jsonString);
@@ -301,7 +303,4 @@ public class BlocSpotSearchListFragment extends Fragment
         String text = TextUtils.join("\n", businessNames);
         return text;
     }
-
-
-
 }

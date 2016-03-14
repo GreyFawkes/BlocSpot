@@ -20,6 +20,7 @@ import io.bloc.android.blocspot.R;
 import io.bloc.android.blocspot.api.DataSource;
 import io.bloc.android.blocspot.api.model.LocationItem;
 import io.bloc.android.blocspot.ui.adapter.LocationAdapter;
+import io.bloc.android.blocspot.ui.dialog.BlocSpotFilterDialogFragment;
 import io.bloc.android.blocspot.ui.dialog.BlocSpotLocationItemOptionsDialog;
 import io.bloc.android.blocspot.ui.dialog.BlocSpotNewLocationItemDialog;
 
@@ -31,7 +32,8 @@ public class BlocSpotLocationListFragment extends Fragment
         LocationAdapter.Delegate,
         LocationAdapter.DataSource,
         BlocSpotLocationItemOptionsDialog.Callback,
-        BlocSpotNewLocationItemDialog.Callback{
+        BlocSpotNewLocationItemDialog.Callback,
+        BlocSpotFilterDialogFragment.Callbacks{
 
     //private static final variables
 
@@ -138,12 +140,21 @@ public class BlocSpotLocationListFragment extends Fragment
                                   long categoryId, boolean hasVisitedLocation,
                                   double latitude, double longitude) {
 
-
         BlocSpotApplication.getSharedDataSource().updateLocationItem(
                 locationId, locationName, categoryId, locationNote, hasVisitedLocation, latitude, longitude
         );
         updateLocationDataSet();
         Log.i(TAG_LOCATION_LIST_FRAGMENT, locationId + " " + locationName + " " + locationNote + " " + categoryId + " " + hasVisitedLocation);
+    }
+
+    //-------------Interface method: Callback - onCloseFilter
+
+    @Override
+    public void onCloseFilter(boolean filterChanged) {
+        if(filterChanged) {
+            //update the location list using the new filter
+            updateLocationDataSet();
+        }
     }
 
     //------------private methods-----------
@@ -207,6 +218,7 @@ public class BlocSpotLocationListFragment extends Fragment
 
     }
 
+
     //initialize the Location Data from the Database
     private void updateLocationDataSet() {
 
@@ -230,6 +242,4 @@ public class BlocSpotLocationListFragment extends Fragment
         });
 
     }
-
-
 }
